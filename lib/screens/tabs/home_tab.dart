@@ -19,21 +19,17 @@ class _HomeTabState extends State<HomeTab> {
 
   @override
   Widget build(BuildContext context) {
-    Color bgColor = primaryColor; // light background
-    Color textColor = Colors.black87;
-    Color iconColor = Colors.black54;
-
     return SafeArea(
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () => FocusScope.of(context).unfocus(),
         child: Column(
           children: [
-            // Top design section
+            // Top section
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               decoration: BoxDecoration(
-                color: bgColor,
+                color: primaryColor,
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(24),
                   bottomRight: Radius.circular(24),
@@ -46,10 +42,10 @@ class _HomeTabState extends State<HomeTab> {
                   ),
                 ],
                 image: const DecorationImage(
-                  image: AssetImage("assets/logo-icon-white.webp"),
+                  image: AssetImage("assets/logo-icon-black.webp"),
                   fit: BoxFit.contain,
                   alignment: Alignment.center,
-                  opacity: 0.15,
+                  opacity: 0.1,
                 ),
               ),
 
@@ -62,13 +58,20 @@ class _HomeTabState extends State<HomeTab> {
                       // Left column
                       Row(
                         children: [
-                          Icon(Icons.location_on_rounded, color: iconColor),
+                          Icon(
+                            Icons.location_on_rounded,
+                            color: Colors.black87,
+                          ),
                           const SizedBox(width: 4),
                           DropdownButton<String>(
                             value: selectedLocation,
                             underline: const SizedBox(),
-                            iconEnabledColor: iconColor,
-                            style: TextStyle(color: textColor, fontSize: 16),
+                            iconEnabledColor: Colors.black87,
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                            ),
                             items:
                                 <String>[
                                   'Dubai',
@@ -94,12 +97,12 @@ class _HomeTabState extends State<HomeTab> {
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.2),
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Icon(
-                          Icons.notifications_rounded,
-                          color: iconColor,
+                          Icons.notifications_active_outlined,
+                          color: Colors.black54,
                         ),
                       ),
                     ],
@@ -114,16 +117,14 @@ class _HomeTabState extends State<HomeTab> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: TextField(
                             decoration: InputDecoration(
-                              icon: Icon(Icons.search, color: iconColor),
+                              icon: Icon(Icons.search, color: Colors.black54),
                               hintText: "Search...",
-                              hintStyle: TextStyle(
-                                color: iconColor.withOpacity(0.7),
-                              ),
+                              hintStyle: TextStyle(color: Colors.black54),
                               border: InputBorder.none,
                             ),
                           ),
@@ -131,12 +132,12 @@ class _HomeTabState extends State<HomeTab> {
                       ),
                       const SizedBox(width: 12),
                       Container(
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade200,
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Icon(Icons.filter_list, color: iconColor),
+                        child: Icon(Icons.filter_list, color: Colors.black54),
                       ),
                     ],
                   ),

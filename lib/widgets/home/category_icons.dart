@@ -46,7 +46,7 @@ class CategoryIcons extends StatelessWidget {
                       ),
                       child: Icon(
                         serviceIcons[service.name] ?? Icons.category,
-                        color: Colors.white,
+                        color: Colors.black87,
                         size: 24,
                       ),
                     ),

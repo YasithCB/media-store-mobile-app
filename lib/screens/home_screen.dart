@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_app/screens/tabs/home_tab.dart';
+import 'package:mobile_app/screens/tabs/services_tab.dart';
 import 'package:mobile_app/screens/tabs/tab_2.dart';
-import 'package:mobile_app/screens/tabs/tab_3.dart';
 import 'package:mobile_app/screens/tabs/tab_4.dart';
 import 'package:mobile_app/screens/tabs/tab_5.dart';
 
@@ -18,7 +18,13 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0; // default to middle Services tab
 
-  final List<Widget> _pages = [HomeTab(), Tab2(), Tab3(), Tab4(), Tab5()];
+  final List<Widget> _pages = [
+    HomeTab(),
+    Tab2(),
+    ServicesTab(),
+    Tab4(),
+    Tab5(),
+  ];
 
   void _onTabSelected(int index) {
     setState(() => _currentIndex = index);

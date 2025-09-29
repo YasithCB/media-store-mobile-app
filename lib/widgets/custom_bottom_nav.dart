@@ -26,7 +26,7 @@ class CustomBottomNav extends StatelessWidget {
           onTap: onTabSelected,
           selectedFontSize: 12,
           unselectedFontSize: 12,
-          selectedItemColor: primaryColor,
+          selectedItemColor: primaryColorHover,
           unselectedItemColor: Colors.black54,
           items: const [
             BottomNavigationBarItem(
@@ -76,7 +76,7 @@ class CustomBottomNav extends StatelessWidget {
                 child: Icon(
                   Icons.account_tree_outlined,
                   size: centerIconSize,
-                  color: Colors.white,
+                  color: Colors.black87,
                 ),
               ),
             ),

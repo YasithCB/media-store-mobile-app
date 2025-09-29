@@ -70,6 +70,7 @@ flutter:
   assets:
     - assets/logo.webp
     - assets/logo-icon-white.webp
+    - assets/logo-icon-black.webp
 
     - assets/images/get-started.webp
     - assets/images/sponsored/spo1.webp

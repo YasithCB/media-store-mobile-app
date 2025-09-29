@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
-final Color primaryColorLight = const Color(0xFFFFC107);
-final Color primaryColor = const Color(0xFFF9A61B);
-final Color primaryColor5 = Color(0x12FFCF00);
-final Color primaryColor20 = Color(0x33FFCF00);
-final Color primaryColor50 = Color(0x80FFCF00);
-final Color primaryColorHover = Color(0xFFC17A0C);
-final Color primaryColorHover2 = Color(0xFF785C00);
+final Color primaryColor = Color(0xFFFFE700);
+final Color primaryColor5 = Color(0x12FFEB3B);
+final Color primaryColor20 = Color(0x33FFEB3B);
+final Color primaryColor50 = Color(0x80FFEB3B);
+final Color primaryColorHover = Color(0xFFC3B006);
+final Color primaryColorHover2 = Color(0xFFC19C06);
 
 // 📏 Get device width & height
 double deviceWidth = 0;

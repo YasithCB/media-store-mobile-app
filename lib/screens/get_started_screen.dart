@@ -101,7 +101,7 @@ class GetStartedScreen extends StatelessWidget {
                                 );
                               },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryColorLight,
+                            backgroundColor: primaryColor,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
