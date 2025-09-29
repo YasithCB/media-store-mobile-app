@@ -45,12 +45,6 @@ class _ServicesTabState extends State<ServicesTab> {
                   offset: const Offset(0, 2),
                 ),
               ],
-              image: const DecorationImage(
-                image: AssetImage("assets/logo-icon-black.webp"),
-                fit: BoxFit.contain,
-                alignment: Alignment.center,
-                opacity: 0.1,
-              ),
             ),
 
             child: Column(
@@ -61,6 +55,7 @@ class _ServicesTabState extends State<ServicesTab> {
                   children: [
                     // Left column
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Icon(Icons.location_on_rounded, color: Colors.black87),
                         const SizedBox(width: 4),
@@ -79,6 +74,9 @@ class _ServicesTabState extends State<ServicesTab> {
                                 'Abu Dhabi',
                                 'Sharjah',
                                 'Ajman',
+                                'Umm Al Quwain',
+                                'Ras Al Khaimah',
+                                'Fujairah',
                               ].map<DropdownMenuItem<String>>((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,

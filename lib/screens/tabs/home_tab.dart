@@ -41,12 +41,6 @@ class _HomeTabState extends State<HomeTab> {
                     offset: const Offset(0, 2),
                   ),
                 ],
-                image: const DecorationImage(
-                  image: AssetImage("assets/logo-icon-black.webp"),
-                  fit: BoxFit.contain,
-                  alignment: Alignment.center,
-                  opacity: 0.1,
-                ),
               ),
 
               child: Column(
@@ -78,6 +72,9 @@ class _HomeTabState extends State<HomeTab> {
                                   'Abu Dhabi',
                                   'Sharjah',
                                   'Ajman',
+                                  'Umm Al Quwain',
+                                  'Ras Al Khaimah',
+                                  'Fujairah',
                                 ].map<DropdownMenuItem<String>>((String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,

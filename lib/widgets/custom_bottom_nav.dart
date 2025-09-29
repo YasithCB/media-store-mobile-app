@@ -54,9 +54,9 @@ class CustomBottomNav extends StatelessWidget {
 
         // Floating center button
         Positioned(
-          top: -10, // makes it overflow above navbar
+          top: -10,
           child: GestureDetector(
-            onTap: () => onTabSelected(2), // handle center button tap
+            onTap: () => onTabSelected(2),
             child: Container(
               height: centerIconSize + 25,
               width: centerIconSize + 25,
@@ -72,11 +72,12 @@ class CustomBottomNav extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Center(
-                child: Icon(
-                  Icons.account_tree_outlined,
-                  size: centerIconSize,
-                  color: Colors.black87,
+              child: Padding(
+                padding: const EdgeInsets.all(10), // 👈 control spacing
+                child: Image.asset(
+                  "assets/logo-icon-black.webp",
+                  fit: BoxFit.contain,
+                  color: Colors.black54, // 👈 to mimic opacity
                 ),
               ),
             ),
