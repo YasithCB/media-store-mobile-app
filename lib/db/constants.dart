@@ -11,7 +11,7 @@ final Color primaryColorHover2 = Color(0xFFC19C06);
 double deviceWidth = 0;
 double deviceHeight = 0;
 
-const String baseUrl = "http://192.168.100.120:5000";
+const String baseUrl = "http://192.168.100.120:3000";
 
 Map<String, dynamic> currentUser = {};
 String currentUserToken = '';

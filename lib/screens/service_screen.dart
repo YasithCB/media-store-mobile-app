@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mobile_app/api/post_api.dart';
 import 'package:mobile_app/db/constants.dart';
 
 import '../../models/post_model.dart';
 import '../../widgets/post.dart';
 
-class ServicesTab extends StatefulWidget {
-  const ServicesTab({super.key});
+class ServiceScreen extends StatefulWidget {
+  final int categoryId;
+  final String categoryName;
+  final bool filterBySubCategory;
+
+  const ServiceScreen({
+    super.key,
+    required this.categoryId,
+    required this.filterBySubCategory,
+    required this.categoryName,
+  });
 
   @override
-  State<ServicesTab> createState() => _ServicesTabState();
+  State<ServiceScreen> createState() => _ServiceScreenState();
 }
 
-class _ServicesTabState extends State<ServicesTab> {
+class _ServiceScreenState extends State<ServiceScreen> {
   String selectedLocation = "Dubai";
   String selectedSort = "Popularity";
 
@@ -22,98 +30,35 @@ class _ServicesTabState extends State<ServicesTab> {
   @override
   void initState() {
     super.initState();
-    _posts = PostApi.getAllPosts();
+    _posts = widget.filterBySubCategory
+        ? PostApi.getPostsBySubcategory(widget.categoryId)
+        : PostApi.getPostsByCategory(widget.categoryId);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(5),
-        child: AppBar(
-          backgroundColor: primaryColor,
-          elevation: 0,
-          systemOverlayStyle: SystemUiOverlayStyle.dark,
+      appBar: AppBar(
+        title: Text(
+          widget.categoryName,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w500,
+            color: Colors.black,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: primaryColor,
+        foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
       ),
       body: Column(
         children: [
-          // 🔹 Top search/filter bar
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            decoration: BoxDecoration(
-              color: primaryColor,
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(24),
-                bottomRight: Radius.circular(24),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.3),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const TextField(
-                          decoration: InputDecoration(
-                            icon: Icon(Icons.search, color: Colors.black54),
-                            hintText: "Search...",
-                            hintStyle: TextStyle(color: Colors.black54),
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(
-                        Icons.filter_list,
-                        color: Colors.black54,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    InkWell(
-                      onTap: () {
-                        // todo: notifications
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Icon(
-                          Icons.notifications_active_outlined,
-                          color: Colors.black54,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-              ],
-            ),
-          ),
-
-          // 🔹 Main content
           Expanded(
             child: FutureBuilder<List<PostModel>>(
               future: _posts,
@@ -147,7 +92,7 @@ class _ServicesTabState extends State<ServicesTab> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "${allServices.length} Services",
+                              "${allServices.length} Results",
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

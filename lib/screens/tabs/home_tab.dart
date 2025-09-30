@@ -3,10 +3,9 @@ import 'package:mobile_app/db/constants.dart';
 import 'package:mobile_app/screens/login_screen.dart';
 import 'package:mobile_app/util/navigation_util.dart';
 import 'package:mobile_app/widgets/home/banner_swiper.dart';
-import 'package:mobile_app/widgets/home/category_icons.dart';
+import 'package:mobile_app/widgets/home/categories_grid.dart';
+import 'package:mobile_app/widgets/home/horizontal_post_slider.dart';
 
-import '../../db/services_data.dart';
-import '../../widgets/home/service_slider.dart';
 import '../../widgets/home/sponsored_poster.dart';
 
 class HomeTab extends StatefulWidget {
@@ -47,52 +46,38 @@ class _HomeTabState extends State<HomeTab> {
 
               child: Column(
                 children: [
-                  // Top Row
+                  const SizedBox(height: 8),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Left column
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.location_on_rounded,
-                            color: Colors.black87,
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          const SizedBox(width: 4),
-                          DropdownButton<String>(
-                            value: selectedLocation,
-                            underline: const SizedBox(),
-                            iconEnabledColor: Colors.black87,
-                            style: TextStyle(
-                              color: Colors.black87,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
+                          child: TextField(
+                            decoration: InputDecoration(
+                              icon: Icon(Icons.search, color: Colors.black54),
+                              hintText: "Search...",
+                              hintStyle: TextStyle(color: Colors.black54),
+                              border: InputBorder.none,
                             ),
-                            items:
-                                <String>[
-                                  'Dubai',
-                                  'Abu Dhabi',
-                                  'Sharjah',
-                                  'Ajman',
-                                  'Umm Al Quwain',
-                                  'Ras Al Khaimah',
-                                  'Fujairah',
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                selectedLocation = newValue!;
-                              });
-                            },
                           ),
-                        ],
+                        ),
                       ),
+                      const SizedBox(width: 12),
 
-                      // Right column (notification icon)
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(Icons.filter_list, color: Colors.black54),
+                      ),
+                      const SizedBox(width: 12),
+
                       InkWell(
                         onTap: () => {
                           NavigationUtil.pushReplacement(
@@ -114,41 +99,6 @@ class _HomeTabState extends State<HomeTab> {
                       ),
                     ],
                   ),
-
-                  const SizedBox(height: 8),
-
-                  // Second row: search + filter
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: TextField(
-                            decoration: InputDecoration(
-                              icon: Icon(Icons.search, color: Colors.black54),
-                              hintText: "Search...",
-                              hintStyle: TextStyle(color: Colors.black54),
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(Icons.filter_list, color: Colors.black54),
-                      ),
-                    ],
-                  ),
-
                   const SizedBox(height: 8),
                 ],
               ),
@@ -162,14 +112,13 @@ class _HomeTabState extends State<HomeTab> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    CategoryGrid(),
                     SizedBox(height: 10),
+
                     BannerSwiper(),
                     SizedBox(height: 20),
 
-                    CategoryIcons(),
-                    SizedBox(height: 30),
-
-                    ServiceSlider(list: allServices),
+                    HorizontalPostSlider(),
 
                     // SizedBox(height: 30),
                     SponsoredPoster(

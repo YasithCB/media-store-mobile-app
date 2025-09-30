@@ -27,7 +27,7 @@ class _BannerSwiperState extends State<BannerSwiper> {
       children: [
         // === Title: Special Offers ===
         const Text(
-          "#SpecialForYou",
+          "Offers Today",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
 

@@ -1,52 +1,48 @@
 import 'package:flutter/material.dart';
 
-import '../models/service_model.dart';
+import '../models/post_model.dart';
 
-class ServiceCard extends StatelessWidget {
-  final ServiceModel service;
+class Post extends StatelessWidget {
+  final PostModel post;
 
-  const ServiceCard({super.key, required this.service});
+  const Post({super.key, required this.post});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 180,
+      width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            blurRadius: 5,
+            offset: const Offset(1, 3),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Product image
           ClipRRect(
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(12),
               topRight: Radius.circular(12),
             ),
-            child: Image.asset(
-              service.image,
-              height: 100,
+            child: SizedBox(
+              height: 200,
               width: double.infinity,
-              fit: BoxFit.cover,
+              child: Image.network(post.media[0], fit: BoxFit.cover),
             ),
           ),
-
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Title
                 Text(
-                  service.name,
+                  post.title,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -54,47 +50,36 @@ class ServiceCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-
                 const SizedBox(height: 4),
-
-                // Description
                 Text(
-                  service.desc,
+                  post.description,
                   style: const TextStyle(fontSize: 10, color: Colors.grey),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-
                 const SizedBox(height: 8),
-
-                // Rating
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Row(
                       children: [
                         Icon(Icons.star, color: Colors.orangeAccent, size: 14),
-                        const SizedBox(width: 4),
+                        SizedBox(width: 4),
                         Text(
-                          service.rating.toStringAsFixed(1),
-                          style: const TextStyle(fontSize: 12),
+                          post.rating.toString(),
+                          style: TextStyle(fontSize: 12),
                         ),
                       ],
                     ),
-
-                    // Price
                     Text(
-                      "From AED${service.startingPrice.toStringAsFixed(0)}",
-                      style: const TextStyle(
+                      "From AED${post.price}",
+                      style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
-
-                const SizedBox(height: 8),
               ],
             ),
           ),
