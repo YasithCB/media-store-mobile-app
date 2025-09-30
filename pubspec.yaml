@@ -73,6 +73,10 @@ flutter:
     - assets/logo-icon-black.webp
 
     - assets/images/get-started.webp
+    - assets/images/view/robot-with-logo.webp
+
+    - assets/images/icons/google.webp
+
     - assets/images/sponsored/spo1.webp
     - assets/images/sponsored/spo2.webp
 

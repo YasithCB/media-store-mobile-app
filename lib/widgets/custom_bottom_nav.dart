@@ -77,7 +77,7 @@ class CustomBottomNav extends StatelessWidget {
                 child: Image.asset(
                   "assets/logo-icon-black.webp",
                   fit: BoxFit.contain,
-                  color: Colors.black54, // 👈 to mimic opacity
+                  color: Colors.black87, // 👈 to mimic opacity
                 ),
               ),
             ),

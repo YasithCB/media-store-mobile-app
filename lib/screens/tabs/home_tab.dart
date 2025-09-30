@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/db/constants.dart';
+import 'package:mobile_app/screens/login_screen.dart';
+import 'package:mobile_app/util/navigation_util.dart';
 import 'package:mobile_app/widgets/home/banner_swiper.dart';
 import 'package:mobile_app/widgets/home/category_icons.dart';
 
@@ -91,15 +93,23 @@ class _HomeTabState extends State<HomeTab> {
                       ),
 
                       // Right column (notification icon)
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(
-                          Icons.notifications_active_outlined,
-                          color: Colors.black54,
+                      InkWell(
+                        onTap: () => {
+                          NavigationUtil.pushReplacement(
+                            context,
+                            LoginScreen(),
+                          ),
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            Icons.notifications_active_outlined,
+                            color: Colors.black54,
+                          ),
                         ),
                       ),
                     ],
