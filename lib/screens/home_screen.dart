@@ -20,9 +20,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _pages = [
     HomeTab(),
-    Tab2(),
     ServicesTab(),
     Tab4(),
+    WishlistTab(wishlistItems: []),
     Tab5(),
   ];
 
