@@ -112,7 +112,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                       NavigationUtil.push(
                         context,
                         ServiceScreen(
-                          categoryId: sub.categoryId,
+                          categoryId: sub.subcategoryId,
                           filterBySubCategory: true,
                           categoryName: sub.name,
                         ),

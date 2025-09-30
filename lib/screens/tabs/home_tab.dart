@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/db/constants.dart';
-import 'package:mobile_app/screens/login_screen.dart';
-import 'package:mobile_app/util/navigation_util.dart';
 import 'package:mobile_app/widgets/home/banner_swiper.dart';
 import 'package:mobile_app/widgets/home/categories_grid.dart';
 import 'package:mobile_app/widgets/home/horizontal_post_slider.dart';
+import 'package:mobile_app/widgets/loading.dart';
 
+import '../../api/post_api.dart';
+import '../../models/post_model.dart';
 import '../../widgets/home/sponsored_poster.dart';
 
 class HomeTab extends StatefulWidget {
@@ -18,6 +19,30 @@ class HomeTab extends StatefulWidget {
 class _HomeTabState extends State<HomeTab> {
   String selectedLocation = "Dubai";
 
+  late Future<List<dynamic>> _combinedFuture;
+
+  fetchPopularPosts() {
+    return PostApi.getHighRatedPosts();
+  }
+
+  fetchPopularPostsInVideoAndCamera() {
+    return PostApi.getPostsBySubcategory(5);
+  }
+
+  fetchPopularPostsInAudioAndSound() {
+    return PostApi.getPostsBySubcategory(4);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _combinedFuture = Future.wait([
+      fetchPopularPosts(), // returns List<Post>
+      fetchPopularPostsInVideoAndCamera(),
+      fetchPopularPostsInAudioAndSound(),
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -28,7 +53,7 @@ class _HomeTabState extends State<HomeTab> {
           children: [
             // Top section
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 color: primaryColor,
                 borderRadius: const BorderRadius.only(
@@ -58,7 +83,11 @@ class _HomeTabState extends State<HomeTab> {
                           ),
                           child: TextField(
                             decoration: InputDecoration(
-                              icon: Icon(Icons.search, color: Colors.black54),
+                              icon: Icon(
+                                Icons.search,
+                                color: Colors.black54,
+                                size: 20,
+                              ),
                               hintText: "Search...",
                               hintStyle: TextStyle(color: Colors.black54),
                               border: InputBorder.none,
@@ -74,16 +103,17 @@ class _HomeTabState extends State<HomeTab> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Icon(Icons.filter_list, color: Colors.black54),
+                        child: Icon(
+                          Icons.filter_list,
+                          color: Colors.black54,
+                          size: 20,
+                        ),
                       ),
                       const SizedBox(width: 12),
 
                       InkWell(
                         onTap: () => {
-                          NavigationUtil.pushReplacement(
-                            context,
-                            LoginScreen(),
-                          ),
+                          // todo
                         },
                         child: Container(
                           padding: const EdgeInsets.all(8),
@@ -94,6 +124,7 @@ class _HomeTabState extends State<HomeTab> {
                           child: Icon(
                             Icons.notifications_active_outlined,
                             color: Colors.black54,
+                            size: 20,
                           ),
                         ),
                       ),
@@ -105,34 +136,71 @@ class _HomeTabState extends State<HomeTab> {
             ),
 
             // Rest of your page
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    CategoryGrid(),
-                    SizedBox(height: 10),
+            FutureBuilder(
+              future: _combinedFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return SizedBox(
+                    height: 200,
+                    child: const Center(child: Loading()),
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(child: Text("Error: ${snapshot.error}"));
+                } else if (!snapshot.hasData) {
+                  return const Center(child: Text("No data found"));
+                }
 
-                    BannerSwiper(),
-                    SizedBox(height: 20),
+                final results = snapshot.data!;
+                final popularPosts = results[0] as List<PostModel>;
+                final videoAndCameraPosts = results[1] as List<PostModel>;
+                final audioAndSoundPosts = results[2] as List<PostModel>;
 
-                    HorizontalPostSlider(),
+                return Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        CategoryGrid(needSubCategories: true),
+                        const SizedBox(height: 8),
 
-                    // SizedBox(height: 30),
-                    SponsoredPoster(
-                      imagePath: "assets/images/sponsored/spo2.webp",
-                      tagline: "Launch your brand to new heights today!",
-                      onTap: () {
-                        // todo
-                      },
+                        BannerSwiper(),
+                        const SizedBox(height: 8),
+
+                        HorizontalPostSlider(
+                          title: 'Popular Today',
+                          postsList: popularPosts,
+                        ),
+
+                        const SizedBox(height: 8),
+
+                        HorizontalPostSlider(
+                          title: 'Popular In Video & Camera',
+                          postsList: videoAndCameraPosts,
+                        ),
+
+                        const SizedBox(height: 8),
+
+                        HorizontalPostSlider(
+                          title: 'Popular In Audio & Sound',
+                          postsList: audioAndSoundPosts,
+                        ),
+
+                        const SizedBox(height: 8),
+
+                        SponsoredPoster(
+                          imagePath: "assets/images/sponsored/spo2.webp",
+                          tagline: "Launch your brand to new heights today!",
+                          onTap: () {
+                            // todo
+                          },
+                        ),
+                      ],
                     ),
-
-                    // Add your other widgets here
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
           ],
         ),

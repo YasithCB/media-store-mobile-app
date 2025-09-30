@@ -52,8 +52,9 @@ class LoginScreen extends StatelessWidget {
                       filled: true,
                       fillColor: lightYellow,
                       prefixIcon: const Icon(
-                        Icons.email,
+                        Icons.alternate_email,
                         color: Colors.black54,
+                        size: 20,
                       ),
                       hintText: "Email",
                       hintStyle: const TextStyle(color: Colors.black54),
@@ -78,7 +79,11 @@ class LoginScreen extends StatelessWidget {
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: lightYellow,
-                      prefixIcon: const Icon(Icons.lock, color: Colors.black54),
+                      prefixIcon: const Icon(
+                        Icons.lock_outline,
+                        color: Colors.black54,
+                        size: 20,
+                      ),
                       hintText: "Password",
                       hintStyle: const TextStyle(color: Colors.black54),
                       enabledBorder: OutlineInputBorder(
@@ -100,10 +105,7 @@ class LoginScreen extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () {
-                        NavigationUtil.pushReplacement(
-                          context,
-                          ForgotPasswordScreen(),
-                        );
+                        NavigationUtil.push(context, ForgotPasswordScreen());
                       },
                       child: const Text(
                         "Forgot Password?",

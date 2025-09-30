@@ -34,16 +34,16 @@ class CustomBottomNav extends StatelessWidget {
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.favorite_border_rounded),
-              label: 'Wishlist',
+              icon: Icon(Icons.content_paste_search),
+              label: 'Explore',
             ),
             BottomNavigationBarItem(
               icon: SizedBox.shrink(), // placeholder for center button
               label: '',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_bag_outlined),
-              label: 'Orders',
+              icon: Icon(Icons.favorite_border_rounded),
+              label: 'Wishlist',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person_2_outlined),
@@ -58,8 +58,8 @@ class CustomBottomNav extends StatelessWidget {
           child: GestureDetector(
             onTap: () => onTabSelected(2),
             child: Container(
-              height: centerIconSize + 25,
-              width: centerIconSize + 25,
+              height: centerIconSize + 15,
+              width: centerIconSize + 15,
               decoration: BoxDecoration(
                 color: primaryColor,
                 shape: BoxShape.rectangle,
@@ -72,12 +72,11 @@ class CustomBottomNav extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(10), // 👈 control spacing
-                child: Image.asset(
-                  "assets/logo-icon-black.webp",
-                  fit: BoxFit.contain,
-                  color: Colors.black87, // 👈 to mimic opacity
+              child: const Center(
+                child: Icon(
+                  Icons.add_box_outlined, // plus icon
+                  color: Colors.black54,
+                  size: 28,
                 ),
               ),
             ),

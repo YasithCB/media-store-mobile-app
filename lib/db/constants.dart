@@ -15,3 +15,114 @@ const String baseUrl = "http://192.168.100.120:3000";
 
 Map<String, dynamic> currentUser = {};
 String currentUserToken = '';
+
+// ad post data
+String post_country = '';
+String post_emirate = '';
+int post_category_id = -1;
+String post_category_title = '';
+int post_subcategory_id = -1;
+String post_subcategory_title = '';
+
+List<String> usageOptions = [
+  "Never used",
+  "Used once",
+  "Light usage",
+  "Normal usage",
+  "Heavy usage",
+];
+
+List<String> conditionOptions = ["Excellent", "Good", "Average", "Poor"];
+
+List<String> locationOptions = [
+  "Dubai",
+  "Abu Dhabi",
+  "Sharjah",
+  "Ajman",
+  "Fujairah",
+  "Ras Al Khaimah",
+  "Umm Al Quwain",
+];
+
+// country and states
+List<Map<String, dynamic>> countryAndStates = [
+  {
+    "country": "United Arab Emirates",
+    "states": [
+      "Abu Dhabi",
+      "Dubai",
+      "Sharjah",
+      "Ajman",
+      "Umm Al-Quwain",
+      "Ras Al Khaimah",
+      "Fujairah",
+    ],
+  },
+  {
+    "country": "Saudi Arabia",
+    "states": [
+      "Riyadh",
+      "Makkah",
+      "Madinah",
+      "Qassim",
+      "Eastern Province",
+      "Asir",
+      "Tabuk",
+      "Hail",
+      "Northern Borders",
+      "Jizan",
+      "Najran",
+      "Al-Baha",
+      "Al-Jouf",
+    ],
+  },
+  {
+    "country": "Kuwait",
+    "states": [
+      "Al Asimah",
+      "Hawalli",
+      "Farwaniya",
+      "Jahra",
+      "Mubarak Al-Kabeer",
+      "Ahmadi",
+    ],
+  },
+  {
+    "country": "Qatar",
+    "states": [
+      "Doha",
+      "Al Rayyan",
+      "Al Wakrah",
+      "Umm Salal",
+      "Al Khor",
+      "Al Daayen",
+      "Al Shamal",
+      "Al Shahaniya",
+    ],
+  },
+  {
+    "country": "Bahrain",
+    "states": [
+      "Capital Governorate",
+      "Muharraq",
+      "Northern Governorate",
+      "Southern Governorate",
+    ],
+  },
+  {
+    "country": "Oman",
+    "states": [
+      "Muscat",
+      "Dhofar",
+      "Musandam",
+      "Al Buraimi",
+      "Al Dakhiliyah",
+      "Al Batinah North",
+      "Al Batinah South",
+      "Al Sharqiyah North",
+      "Al Sharqiyah South",
+      "Ad Dhahirah",
+      "Al Wusta",
+    ],
+  },
+];

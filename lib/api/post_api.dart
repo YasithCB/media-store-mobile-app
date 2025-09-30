@@ -18,11 +18,9 @@ class PostApi {
     }
   }
 
-  // Get all posts
+  // Get high rating posts
   static Future<List<PostModel>> getHighRatedPosts() async {
     final response = await http.get(Uri.parse("$baseUrl/posts/topRated"));
-    print('response.body');
-    print(response.body);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final List postsJson = data['data'];
@@ -50,9 +48,12 @@ class PostApi {
   static Future<List<PostModel>> getPostsBySubcategory(
     int subcategoryId,
   ) async {
+    print('response.body');
     final response = await http.get(
       Uri.parse("$baseUrl/posts/subcategory/$subcategoryId"),
     );
+    print('response.body');
+    print(response.body);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final List postsJson = data['data'];

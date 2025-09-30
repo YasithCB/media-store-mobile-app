@@ -30,21 +30,40 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Change Password',
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w500,
+            color: Colors.black,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: primaryColor,
+        foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text(
-                "Change Password",
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+              const SizedBox(height: 20),
+
+              SizedBox(
+                height: 150,
+                child: Image.asset(
+                  "assets/images/view/password-vector.webp",
+                  fit: BoxFit.contain,
                 ),
               ),
-
               const SizedBox(height: 20),
 
               // Current Password
@@ -125,7 +144,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       decoration: InputDecoration(
         filled: true,
         fillColor: fillColor,
-        prefixIcon: Icon(icon, color: Colors.black54),
+        prefixIcon: Icon(icon, color: Colors.black54, size: 20),
         hintText: hint,
         hintStyle: const TextStyle(color: Colors.black54),
         enabledBorder: OutlineInputBorder(

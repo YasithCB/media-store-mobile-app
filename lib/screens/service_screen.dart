@@ -63,6 +63,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
             child: FutureBuilder<List<PostModel>>(
               future: _posts,
               builder: (context, asyncSnapshot) {
+                print('asyncSnapshot.data');
+                print(asyncSnapshot.data);
                 if (asyncSnapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }

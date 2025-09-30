@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mobile_app/screens/tabs/add_post_tab.dart';
 import 'package:mobile_app/screens/tabs/home_tab.dart';
+import 'package:mobile_app/screens/tabs/profile_tab.dart';
 import 'package:mobile_app/screens/tabs/services_tab.dart';
 import 'package:mobile_app/screens/tabs/tab_2.dart';
-import 'package:mobile_app/screens/tabs/tab_4.dart';
-import 'package:mobile_app/screens/tabs/tab_5.dart';
 
 import '../db/constants.dart';
 import '../widgets/custom_bottom_nav.dart';
@@ -20,10 +20,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _pages = [
     HomeTab(),
-    Tab2(),
     ServicesTab(),
-    Tab4(),
-    Tab5(),
+    AddPostTab(),
+    WishlistTab(wishlistItems: []),
+    ProfileTab(),
   ];
 
   void _onTabSelected(int index) {
