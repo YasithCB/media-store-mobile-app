@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mobile_app/api/equipment_post_api.dart';
 
 import '../../db/constants.dart';
 
@@ -31,6 +32,27 @@ class _EnterPostDetailsState extends State<EnterPostDetails> {
   List<XFile> _selectedPhotos = [];
 
   final ImagePicker _picker = ImagePicker();
+
+  void _submitPost() async {
+    final postData = {
+      "title": _titleController.text,
+      "contact": _contactController.text,
+      "price": double.tryParse(_priceController.text) ?? 0.0,
+      "description": _descriptionController.text,
+      "brand": _brandController.text,
+      "model": _modelController.text,
+      "usage": _selectedUsage,
+      "item_condition": _selectedCondition,
+      "address_line1": _addressLine1Controller.text,
+      "address_line2": _addressLine2Controller.text,
+      "location": _selectedLocation,
+      "photos": _selectedPhotos, // must be a List<String>
+    };
+
+    print("Submitting: $postData");
+
+    await EquipmentPostApi.createEquipmentPost(postData);
+  }
 
   Future<void> loadAssets() async {
     try {
@@ -322,19 +344,5 @@ class _EnterPostDetailsState extends State<EnterPostDetails> {
         side: BorderSide(color: primaryColorHover2, width: 1),
       ),
     );
-  }
-
-  void _submitPost() {
-    // TODO: handle form submission
-    print("Title: ${_titleController.text}");
-    print("Contact: ${_contactController.text}");
-    print("Price: ${_priceController.text}");
-    print("Description: ${_descriptionController.text}");
-    print("Brand: ${_brandController.text}");
-    print("Model: ${_modelController.text}");
-    print("Usage: $_selectedUsage");
-    print("Condition: $_selectedCondition");
-    print("Location: $_selectedLocation");
-    print("Photos: $_selectedPhotos");
   }
 }

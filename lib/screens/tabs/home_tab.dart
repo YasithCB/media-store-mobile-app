@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/api/dealer_post_api.dart';
+import 'package:mobile_app/api/equipment_post_api.dart';
+import 'package:mobile_app/api/job_post_api.dart';
 import 'package:mobile_app/db/constants.dart';
+import 'package:mobile_app/models/dealer_post_model.dart';
+import 'package:mobile_app/models/equipment_post_model.dart';
+import 'package:mobile_app/models/job_post_model.dart';
 import 'package:mobile_app/widgets/home/banner_swiper.dart';
 import 'package:mobile_app/widgets/home/categories_grid.dart';
 import 'package:mobile_app/widgets/home/horizontal_post_slider.dart';
 import 'package:mobile_app/widgets/loading.dart';
 
-import '../../api/post_api.dart';
-import '../../models/post_model.dart';
 import '../../widgets/home/sponsored_poster.dart';
 
 class HomeTab extends StatefulWidget {
@@ -22,15 +26,23 @@ class _HomeTabState extends State<HomeTab> {
   late Future<List<dynamic>> _combinedFuture;
 
   fetchPopularPosts() {
-    return PostApi.getHighRatedPosts();
+    return EquipmentPostApi.getAllEquipmentPosts();
+  }
+
+  fetchJobs() {
+    return JobPostApi.getAllJobPosts();
+  }
+
+  fetchDealers() {
+    return DealerPostApi.getAllDealerPosts();
   }
 
   fetchPopularPostsInVideoAndCamera() {
-    return PostApi.getPostsBySubcategory(5);
+    return EquipmentPostApi.getEquipmentPostsBySubcategory(5);
   }
 
   fetchPopularPostsInAudioAndSound() {
-    return PostApi.getPostsBySubcategory(4);
+    return EquipmentPostApi.getEquipmentPostsBySubcategory(4);
   }
 
   @override
@@ -40,6 +52,8 @@ class _HomeTabState extends State<HomeTab> {
       fetchPopularPosts(), // returns List<Post>
       fetchPopularPostsInVideoAndCamera(),
       fetchPopularPostsInAudioAndSound(),
+      fetchJobs(),
+      fetchDealers(),
     ]);
   }
 
@@ -151,9 +165,13 @@ class _HomeTabState extends State<HomeTab> {
                 }
 
                 final results = snapshot.data!;
-                final popularPosts = results[0] as List<PostModel>;
-                final videoAndCameraPosts = results[1] as List<PostModel>;
-                final audioAndSoundPosts = results[2] as List<PostModel>;
+                final popularPosts = results[0] as List<EquipmentPostModel>;
+                final videoAndCameraPosts =
+                    results[1] as List<EquipmentPostModel>;
+                final audioAndSoundPosts =
+                    results[2] as List<EquipmentPostModel>;
+                final popularJobs = results[3] as List<JobPostModel>;
+                final popularDealers = results[4] as List<DealerPostModel>;
 
                 return Expanded(
                   child: SingleChildScrollView(
@@ -171,6 +189,23 @@ class _HomeTabState extends State<HomeTab> {
                         HorizontalPostSlider(
                           title: 'Popular Today',
                           postsList: popularPosts,
+                          categoryId: 0,
+                        ),
+
+                        const SizedBox(height: 8),
+
+                        HorizontalPostSlider(
+                          title: 'Popular Jobs',
+                          postsList: popularJobs,
+                          categoryId: 2,
+                        ),
+
+                        const SizedBox(height: 8),
+
+                        HorizontalPostSlider(
+                          title: 'Popular Dealers',
+                          postsList: popularDealers,
+                          categoryId: 3,
                         ),
 
                         const SizedBox(height: 8),
@@ -178,6 +213,7 @@ class _HomeTabState extends State<HomeTab> {
                         HorizontalPostSlider(
                           title: 'Popular In Video & Camera',
                           postsList: videoAndCameraPosts,
+                          categoryId: 1,
                         ),
 
                         const SizedBox(height: 8),
@@ -185,6 +221,7 @@ class _HomeTabState extends State<HomeTab> {
                         HorizontalPostSlider(
                           title: 'Popular In Audio & Sound',
                           postsList: audioAndSoundPosts,
+                          categoryId: 1,
                         ),
 
                         const SizedBox(height: 8),

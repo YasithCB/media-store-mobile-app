@@ -32,6 +32,7 @@ dependencies:
   shared_preferences: ^2.2.2
   image_picker: ^1.0.7
   google_maps_flutter: ^2.2.5
+  url_launcher: ^6.1.10
 
   flutter:
     sdk: flutter
@@ -74,7 +75,9 @@ flutter:
     - assets/logo-icon-white.webp
     - assets/logo-icon-black.webp
 
-    - assets/images/get-started.webp
+    - assets/images/view/get-started.webp
+    - assets/images/view/get-started-big-mosq.webp
+    - assets/images/view/get-started-ad-buildings.webp
     - assets/images/view/robot-with-logo.webp
     - assets/images/view/password-vector.webp
 

@@ -30,7 +30,7 @@ class PostApi {
     }
   }
 
-  // Get posts by category ID
+  // Get posts by category ID static
   static Future<List<PostModel>> getPostsByCategory(int categoryId) async {
     final response = await http.get(
       Uri.parse("$baseUrl/posts/category/$categoryId"),

@@ -1,38 +1,74 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app/api/post_api.dart';
+import 'package:mobile_app/api/dealer_post_api.dart';
+import 'package:mobile_app/api/equipment_post_api.dart';
+import 'package:mobile_app/api/job_post_api.dart';
 import 'package:mobile_app/db/constants.dart';
+import 'package:mobile_app/models/dealer_post_model.dart';
+import 'package:mobile_app/models/equipment_post_model.dart';
+import 'package:mobile_app/models/job_post_model.dart';
 
 import '../../models/post_model.dart';
 import '../../widgets/post.dart';
 
-class ServiceScreen extends StatefulWidget {
+class PostScreen extends StatefulWidget {
   final int categoryId;
+  final int subCategoryId;
   final String categoryName;
   final bool filterBySubCategory;
 
-  const ServiceScreen({
+  const PostScreen({
     super.key,
     required this.categoryId,
     required this.filterBySubCategory,
     required this.categoryName,
+    required this.subCategoryId,
   });
 
   @override
-  State<ServiceScreen> createState() => _ServiceScreenState();
+  State<PostScreen> createState() => _PostScreenState();
 }
 
-class _ServiceScreenState extends State<ServiceScreen> {
+class _PostScreenState extends State<PostScreen> {
   String selectedLocation = "Dubai";
   String selectedSort = "Popularity";
 
   late Future<List<PostModel>> _posts;
+  late Future<List<EquipmentPostModel>> _posts_equipment;
+  late Future<List<JobPostModel>> _posts_jobs;
+  late Future<List<DealerPostModel>> _posts_dealers;
 
   @override
   void initState() {
     super.initState();
-    _posts = widget.filterBySubCategory
-        ? PostApi.getPostsBySubcategory(widget.categoryId)
-        : PostApi.getPostsByCategory(widget.categoryId);
+    if (widget.categoryId == 1) {
+      _posts_equipment = widget.filterBySubCategory
+          ? EquipmentPostApi.getEquipmentPostsBySubcategory(
+              widget.subCategoryId,
+            )
+          : EquipmentPostApi.getAllEquipmentPosts();
+    } else if (widget.categoryId == 2) {
+      _posts_jobs = widget.filterBySubCategory
+          ? JobPostApi.getJobPostsBySubcategoryId(widget.subCategoryId)
+          : JobPostApi.getAllJobPosts();
+    } else if (widget.categoryId == 3) {
+      _posts_dealers = widget.filterBySubCategory
+          ? DealerPostApi.getDealerPostsBySubcategory(widget.subCategoryId)
+          : DealerPostApi.getAllDealerPosts();
+    } else {
+      print('unknown category ID ::: ${widget.subCategoryId}');
+    }
+  }
+
+  decideFuture() {
+    if (widget.categoryId == 1) {
+      return _posts_equipment;
+    } else if (widget.categoryId == 2) {
+      return _posts_jobs;
+    } else if (widget.categoryId == 3) {
+      return _posts_dealers;
+    } else {
+      return _posts;
+    }
   }
 
   @override
@@ -60,8 +96,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
       body: Column(
         children: [
           Expanded(
-            child: FutureBuilder<List<PostModel>>(
-              future: _posts,
+            child: FutureBuilder<List<dynamic>>(
+              future: decideFuture(),
               builder: (context, asyncSnapshot) {
                 print('asyncSnapshot.data');
                 print(asyncSnapshot.data);

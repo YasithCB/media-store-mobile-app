@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/api/sub_category_api.dart';
 import 'package:mobile_app/models/sub_category_model.dart';
-import 'package:mobile_app/screens/service_screen.dart';
+import 'package:mobile_app/screens/posts_screen.dart';
 import 'package:mobile_app/util/navigation_util.dart';
 
 import '../db/constants.dart';
@@ -95,10 +95,11 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                     onTap: () {
                       NavigationUtil.push(
                         context,
-                        ServiceScreen(
+                        PostScreen(
                           categoryId: widget.categoryId,
                           filterBySubCategory: false,
                           categoryName: widget.categoryName,
+                          subCategoryId: 0,
                         ),
                       );
                     },
@@ -111,10 +112,11 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                     onTap: () {
                       NavigationUtil.push(
                         context,
-                        ServiceScreen(
-                          categoryId: sub.subcategoryId,
+                        PostScreen(
+                          categoryId: widget.categoryId,
                           filterBySubCategory: true,
                           categoryName: sub.name,
+                          subCategoryId: sub.subcategoryId,
                         ),
                       );
                     },

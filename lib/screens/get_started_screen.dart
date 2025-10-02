@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_app/screens/home_screen.dart';
@@ -5,20 +7,54 @@ import 'package:mobile_app/util/navigation_util.dart';
 
 import '../db/constants.dart';
 
-class GetStartedScreen extends StatelessWidget {
-  final String imagePath;
+class GetStartedScreen extends StatefulWidget {
+  final List<String> imagePaths;
   final String title;
   final String tagline;
   final VoidCallback? onGetStarted;
 
   const GetStartedScreen({
     super.key,
-    this.imagePath = 'assets/images/get-started.webp',
+    this.imagePaths = const [
+      'assets/images/view/get-started-big-mosq.webp',
+      'assets/images/view/get-started-ad-buildings.webp',
+      'assets/images/view/get-started.webp',
+    ],
     this.title = 'Welcome to Media Store',
     this.tagline =
         'All-in-one solutions for branding, printing, and advertising—creative impact under one roof.',
     this.onGetStarted,
   });
+
+  @override
+  State<GetStartedScreen> createState() => _GetStartedScreenState();
+}
+
+class _GetStartedScreenState extends State<GetStartedScreen> {
+  late PageController _pageController;
+  int _currentPage = 0;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _pageController = PageController(initialPage: 0);
+
+    // Auto slideshow timer
+    _timer = Timer.periodic(const Duration(seconds: 4), (Timer timer) {
+      if (_currentPage < widget.imagePaths.length - 1) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
+      _pageController.animateToPage(
+        _currentPage,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +65,20 @@ class GetStartedScreen extends StatelessWidget {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Full-screen image
-          Positioned.fill(child: Image.asset(imagePath, fit: BoxFit.cover)),
+          // PageView slideshow
+          Positioned.fill(
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: widget.imagePaths.length,
+              itemBuilder: (context, index) {
+                return Image.asset(
+                  widget.imagePaths[index],
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                );
+              },
+            ),
+          ),
 
           // Gradient overlay: transparent at top -> dark by 80% -> slightly darker at bottom
           Positioned.fill(
@@ -67,7 +115,7 @@ class GetStartedScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        title,
+                        widget.title,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Colors.white,
@@ -79,7 +127,7 @@ class GetStartedScreen extends StatelessWidget {
 
                       const SizedBox(height: 8),
                       Text(
-                        tagline,
+                        widget.tagline,
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.9),
                           fontSize: 16,
@@ -93,7 +141,7 @@ class GetStartedScreen extends StatelessWidget {
                         height: 52,
                         child: ElevatedButton(
                           onPressed:
-                              onGetStarted ??
+                              widget.onGetStarted ??
                               () {
                                 NavigationUtil.pushReplacement(
                                   context,

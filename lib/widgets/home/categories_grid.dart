@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/db/constants.dart';
 import 'package:mobile_app/screens/add_post/select_subcategory.dart';
-import 'package:mobile_app/screens/service_screen.dart';
+import 'package:mobile_app/screens/posts_screen.dart';
 import 'package:mobile_app/screens/sub_category_screen.dart';
 import 'package:mobile_app/util/navigation_util.dart';
 import 'package:mobile_app/widgets/loading.dart';
@@ -43,12 +43,14 @@ class _CategoryGridState extends State<CategoryGrid> {
       "title": "Media Companies",
       "icon": Icons.business,
       "subcategoryId": 19, // match your DB subcategory_id
+      "categoryId": 3,
     },
 
     {
       "title": "Video & Camera Equipment",
       "icon": Icons.videocam,
       "subcategoryId": 5,
+      "categoryId": 1,
     },
     {"title": "Job Seeking", "icon": Icons.search, "subcategoryId": 10},
 
@@ -56,13 +58,20 @@ class _CategoryGridState extends State<CategoryGrid> {
       "title": "Advertising Companies",
       "icon": Icons.campaign,
       "subcategoryId": 20,
+      "categoryId": 3,
     },
     {
       "title": "Audio & Sound Equipment",
       "icon": Icons.headphones,
       "subcategoryId": 4,
+      "categoryId": 1,
     },
-    {"title": "Job Hiring", "icon": Icons.work, "subcategoryId": 11},
+    {
+      "title": "Job Hiring",
+      "icon": Icons.work,
+      "subcategoryId": 11,
+      "categoryId": 2,
+    },
   ];
 
   @override
@@ -206,10 +215,11 @@ class _CategoryGridState extends State<CategoryGrid> {
         // handle category click
         NavigationUtil.push(
           context,
-          ServiceScreen(
+          PostScreen(
             categoryName: category['title'],
-            categoryId: category['subcategoryId'],
+            categoryId: category['categoryId'],
             filterBySubCategory: true,
+            subCategoryId: category['subcategoryId'],
           ),
         );
       },

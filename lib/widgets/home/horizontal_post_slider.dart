@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/db/constants.dart';
+import 'package:mobile_app/widgets/post_details/dealer_post_details.dart';
+import 'package:mobile_app/widgets/post_details/equipment_post_details.dart';
+import 'package:mobile_app/widgets/post_details/job_post_details.dart';
 
-import '../../models/post_model.dart';
+import '../../util/navigation_util.dart';
 
 class HorizontalPostSlider extends StatefulWidget {
   const HorizontalPostSlider({
     super.key,
     required this.title,
     required this.postsList,
+    required this.categoryId,
   });
 
   final String title;
-  final List<PostModel> postsList;
+  final int categoryId;
+  final List<dynamic> postsList;
 
   @override
   State<HorizontalPostSlider> createState() => _HorizontalPostSliderState();
@@ -45,10 +50,19 @@ class _HorizontalPostSliderState extends State<HorizontalPostSlider> {
               final item = widget.postsList[index];
               return InkWell(
                 onTap: () {
-                  // NavigationUtil.push(
-                  //   context,
-                  //   SubServiceDetailsScreen(service: item),
-                  // );
+                  if (item.categoryId == 1) {
+                    NavigationUtil.push(
+                      context,
+                      EquipmentPostDetails(post: item),
+                    );
+                  } else if (item.categoryId == 2) {
+                    NavigationUtil.push(context, JobPostDetails(post: item));
+                  } else if (item.categoryId == 3) {
+                    NavigationUtil.push(
+                      context,
+                      DealerPostDetails(dealer: item),
+                    );
+                  }
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -56,7 +70,7 @@ class _HorizontalPostSliderState extends State<HorizontalPostSlider> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: Image.network(
-                        item.media[0], // remote URL
+                        item.photos[0], // remote URL
                         fit: BoxFit.cover,
                         height: 100,
                         width: 140,
@@ -71,7 +85,9 @@ class _HorizontalPostSliderState extends State<HorizontalPostSlider> {
 
                     const SizedBox(height: 6),
                     Text(
-                      'AED ${item.price.toString()}',
+                      widget.categoryId == 3
+                          ? item.title
+                          : 'AED ${item.price.toString()}',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
