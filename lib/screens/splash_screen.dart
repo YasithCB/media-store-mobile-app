@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/screens/get_started_screen.dart';
+import 'package:mobile_app/screens/home_screen.dart';
 import 'package:mobile_app/util/navigation_util.dart';
 
 import '../db/constants.dart';
@@ -43,7 +44,11 @@ class _SplashScreenState extends State<SplashScreen>
 
     await Future.delayed(const Duration(seconds: 2)); // splash delay
 
-    NavigationUtil.pushReplacement(context, GetStartedScreen());
+    if (currentUser.isEmpty) {
+      NavigationUtil.pushReplacement(context, GetStartedScreen());
+    } else {
+      NavigationUtil.pushReplacement(context, HomeScreen());
+    }
   }
 
   @override

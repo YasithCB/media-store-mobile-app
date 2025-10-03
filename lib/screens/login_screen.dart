@@ -3,11 +3,113 @@ import 'package:mobile_app/screens/forgot_password.dart';
 import 'package:mobile_app/screens/home_screen.dart';
 import 'package:mobile_app/screens/signup_screen.dart';
 import 'package:mobile_app/util/navigation_util.dart';
+import 'package:mobile_app/util/snackbar_util.dart';
+import 'package:mobile_app/util/storage_util.dart';
+import 'package:mobile_app/widgets/loading_button.dart';
 
+import '../api/auth_api.dart';
 import '../db/constants.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+
+  static Widget _socialButton(String text, Color color, IconData icon) {
+    return ElevatedButton.icon(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        foregroundColor: color,
+        side: BorderSide(color: color),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      onPressed: () {},
+      icon: Icon(icon),
+      label: Text(
+        text,
+        style: TextStyle(color: color, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
+
+  String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Email cannot be empty";
+    }
+    String pattern =
+        r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$'; // email regex
+    RegExp regex = RegExp(pattern);
+    if (!regex.hasMatch(value.trim())) {
+      return "Enter a valid email";
+    }
+    return null;
+  }
+
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Password cannot be empty";
+    }
+    if (value.length < 6) {
+      return "Password must be at least 6 characters";
+    }
+    return null;
+  }
+
+  void login() async {
+    String? emailError = validateEmail(emailController.text);
+    String? passwordError = validatePassword(passwordController.text);
+
+    if (emailError != null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(emailError)));
+      return;
+    }
+
+    if (passwordError != null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(passwordError)));
+      return;
+    }
+
+    setState(() => isLoading = true);
+
+    try {
+      final res = await AuthApi.loginUser(
+        emailController.text.trim(),
+        passwordController.text.trim(),
+      );
+
+      if (res["status"] == 'success' && res["data"]['token'] != null) {
+        currentUserToken = res["data"]['token'];
+        currentUser = res["data"]['user'];
+        print(currentUser);
+        print('currentUser');
+        await StorageUtil.saveUser(currentUser);
+        await StorageUtil.saveToken(currentUserToken);
+
+        NavigationUtil.pushReplacement(context, HomeScreen());
+        SnackBarUtil.show(context, "Login successful");
+      } else {
+        SnackBarUtil.show(
+          context,
+          res["message"] ?? "Login failed, check credentials",
+        );
+      }
+    } catch (e) {
+      SnackBarUtil.show(context, "Login error: $e");
+    } finally {
+      setState(() => isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +150,7 @@ class LoginScreen extends StatelessWidget {
 
                   // Email
                   TextField(
+                    controller: emailController,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: lightYellow,
@@ -75,6 +178,7 @@ class LoginScreen extends StatelessWidget {
 
                   // Password
                   TextField(
+                    controller: passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
                       filled: true,
@@ -127,16 +231,16 @@ class LoginScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      onPressed: () {
-                        NavigationUtil.pushReplacement(context, HomeScreen());
-                      },
-                      child: const Text(
-                        "Login",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 20,
-                        ),
-                      ),
+                      onPressed: login,
+                      child: isLoading
+                          ? LoadingInButton()
+                          : const Text(
+                              "Login",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 20,
+                              ),
+                            ),
                     ),
                   ),
 
@@ -241,23 +345,6 @@ class LoginScreen extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  static Widget _socialButton(String text, Color color, IconData icon) {
-    return ElevatedButton.icon(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
-        foregroundColor: color,
-        side: BorderSide(color: color),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-      onPressed: () {},
-      icon: Icon(icon),
-      label: Text(
-        text,
-        style: TextStyle(color: color, fontWeight: FontWeight.bold),
       ),
     );
   }

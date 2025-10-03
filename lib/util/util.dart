@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../db/constants.dart';
 
@@ -32,4 +33,9 @@ Future<bool> confirmAction(
   );
 
   return confirm ?? false;
+}
+
+String formatJoinDate(String createdAt) {
+  DateTime date = DateTime.parse(createdAt);
+  return "Joined ${DateFormat.yMMM().format(date)}"; // e.g. "Joined Jan 2023"
 }

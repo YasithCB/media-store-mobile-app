@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/db/constants.dart';
+import 'package:mobile_app/screens/profile/edit_profile_screen.dart';
+import 'package:mobile_app/screens/profile/security_screen.dart';
 import 'package:mobile_app/util/storage_util.dart';
 
 import '../../util/navigation_util.dart';
+import '../../util/util.dart';
 import '../login_screen.dart';
 
 class ProfileTab extends StatelessWidget {
@@ -27,7 +30,7 @@ class ProfileTab extends StatelessWidget {
                     backgroundColor:
                         primaryColor, // background color while loading
                     backgroundImage: NetworkImage(
-                      'https://media.istockphoto.com/id/1437816897/photo/business-woman-manager-or-human-resources-portrait-for-career-success-company-we-are-hiring.jpg?s=612x612&w=0&k=20&c=tyLvtzutRh22j9GqSGI33Z4HpIwv9vL_MZw_xOE19NQ=',
+                      '$baseUrl${currentUser['profile_picture']}',
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -35,8 +38,8 @@ class ProfileTab extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          "Delmaine Donson",
+                        Text(
+                          currentUser['name'],
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -81,9 +84,9 @@ class ProfileTab extends StatelessWidget {
                               color: Colors.grey,
                             ),
                             const SizedBox(width: 4),
-                            const Text(
-                              "Joined Jan 2023",
-                              style: TextStyle(
+                            Text(
+                              formatJoinDate(currentUser['created_at']),
+                              style: const TextStyle(
                                 color: Colors.grey,
                                 fontSize: 12,
                               ),
@@ -116,11 +119,8 @@ class ProfileTab extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
-                  Text(
-                    "My Ads",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  Icon(Icons.arrow_forward_ios, size: 18),
+                  Text("My Ads", style: TextStyle(fontSize: 16)),
+                  Icon(Icons.arrow_forward_ios, size: 15),
                 ],
               ),
             ),
@@ -142,30 +142,9 @@ class ProfileTab extends StatelessWidget {
                       size: 12,
                       color: Colors.black54,
                     ),
-                    onTap: () {},
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.settings_outlined, size: 21),
-                    title: const Text("Account Settings"),
-                    trailing: const Icon(
-                      Icons.arrow_forward_ios,
-                      size: 12,
-                      color: Colors.black54,
-                    ),
-                    onTap: () {},
-                  ),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.notifications_active_outlined,
-                      size: 21,
-                    ),
-                    title: const Text("Notification Settings"),
-                    trailing: const Icon(
-                      Icons.arrow_forward_ios,
-                      size: 12,
-                      color: Colors.black54,
-                    ),
-                    onTap: () {},
+                    onTap: () {
+                      NavigationUtil.push(context, EditProfileScreen());
+                    },
                   ),
                   ListTile(
                     leading: const Icon(Icons.lock_open, size: 21),
@@ -175,7 +154,9 @@ class ProfileTab extends StatelessWidget {
                       size: 12,
                       color: Colors.black54,
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      NavigationUtil.push(context, SecurityScreen());
+                    },
                   ),
                   ListTile(
                     leading: const Icon(Icons.work_history_outlined, size: 21),
@@ -223,8 +204,8 @@ class ProfileTab extends StatelessWidget {
                       color: Color(0xFFE00000),
                       size: 21,
                     ),
-                    title: const Text(
-                      "Logout",
+                    title: Text(
+                      'Logout',
                       style: TextStyle(color: Color(0xFFE00000)),
                     ),
                     trailing: const Icon(

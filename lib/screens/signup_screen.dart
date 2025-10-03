@@ -2,8 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mobile_app/api/auth_api.dart';
 import 'package:mobile_app/screens/login_screen.dart';
 import 'package:mobile_app/util/navigation_util.dart';
+import 'package:mobile_app/util/snackbar_util.dart';
+import 'package:mobile_app/widgets/loading_button.dart';
 
 import '../db/constants.dart';
 
@@ -17,6 +20,21 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   File? _profileImage;
   final ImagePicker _picker = ImagePicker();
+  bool isLoading = false;
+
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    phoneController.dispose();
+  }
 
   Future<void> _pickImage() async {
     final XFile? pickedFile = await _picker.pickImage(
@@ -28,6 +46,53 @@ class _SignupScreenState extends State<SignupScreen> {
       setState(() {
         _profileImage = File(pickedFile.path);
       });
+    }
+  }
+
+  void signup() async {
+    String? nameError = validateName(nameController.text);
+    String? emailError = validateEmail(emailController.text);
+    String? passwordError = validatePassword(passwordController.text);
+    String? phoneError = validatePhone(phoneController.text);
+
+    if (nameError != null) {
+      SnackBarUtil.show(context, nameError);
+      return;
+    }
+    if (emailError != null) {
+      SnackBarUtil.show(context, emailError);
+      return;
+    }
+    if (passwordError != null) {
+      SnackBarUtil.show(context, passwordError);
+      return;
+    }
+    if (phoneError != null) {
+      SnackBarUtil.show(context, phoneError);
+      return;
+    }
+
+    setState(() => isLoading = true);
+
+    try {
+      final response = await AuthApi.signupUser(
+        name: nameController.text.trim(),
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+        phone: phoneController.text.trim(),
+        profileImage: _profileImage, // from image picker
+      );
+
+      print("Signup response: $response");
+
+      SnackBarUtil.show(context, response["message"]);
+      if (response["status"] == 'success') {
+        NavigationUtil.pushReplacement(context, LoginScreen());
+      }
+    } catch (e) {
+      SnackBarUtil.show(context, "Signup error: $e");
+    } finally {
+      setState(() => isLoading = false);
     }
   }
 
@@ -94,17 +159,28 @@ class _SignupScreenState extends State<SignupScreen> {
                   const SizedBox(height: 20),
 
                   // Name
-                  _buildTextField("Full Name", Icons.person, lightYellow),
+                  _buildTextField(
+                    "Full Name",
+                    Icons.person,
+                    nameController,
+                    lightYellow,
+                  ),
                   const SizedBox(height: 16),
 
                   // Email
-                  _buildTextField("Email", Icons.email, lightYellow),
+                  _buildTextField(
+                    "Email",
+                    Icons.email,
+                    emailController,
+                    lightYellow,
+                  ),
                   const SizedBox(height: 16),
 
                   // Password
                   _buildTextField(
                     "Password",
                     Icons.lock,
+                    passwordController,
                     lightYellow,
                     isPassword: true,
                   ),
@@ -114,6 +190,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   _buildTextField(
                     "Confirm Password",
                     Icons.lock_outline,
+                    passwordController,
                     lightYellow,
                     isPassword: true,
                   ),
@@ -123,6 +200,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   _buildTextField(
                     "Phone Number",
                     Icons.phone,
+                    phoneController,
                     lightYellow,
                     inputType: TextInputType.phone,
                   ),
@@ -140,16 +218,16 @@ class _SignupScreenState extends State<SignupScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      onPressed: () {
-                        // handle signup
-                      },
-                      child: const Text(
-                        "Sign Up",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 20,
-                        ),
-                      ),
+                      onPressed: signup,
+                      child: isLoading
+                          ? LoadingInButton()
+                          : const Text(
+                              "Sign Up",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 20,
+                              ),
+                            ),
                     ),
                   ),
 
@@ -193,12 +271,14 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget _buildTextField(
     String hint,
     IconData icon,
+    controller,
     Color fillColor, {
     bool isPassword = false,
     TextInputType inputType = TextInputType.text,
   }) {
     return TextField(
       obscureText: isPassword,
+      controller: controller,
       keyboardType: inputType,
       decoration: InputDecoration(
         filled: true,
@@ -216,5 +296,31 @@ class _SignupScreenState extends State<SignupScreen> {
         ),
       ),
     );
+  }
+
+  String? validateName(String? value) {
+    if (value == null || value.trim().isEmpty) return "Name cannot be empty";
+    return null;
+  }
+
+  String? validateEmail(String? value) {
+    if (value == null || value.trim().isEmpty) return "Email cannot be empty";
+    String pattern = r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$';
+    RegExp regex = RegExp(pattern);
+    if (!regex.hasMatch(value.trim())) return "Enter a valid email";
+    return null;
+  }
+
+  String? validatePassword(String? value) {
+    if (value == null || value.trim().isEmpty)
+      return "Password cannot be empty";
+    if (value.trim().length < 6)
+      return "Password must be at least 6 characters";
+    return null;
+  }
+
+  String? validatePhone(String? value) {
+    if (value == null || value.trim().isEmpty) return "Phone cannot be empty";
+    return null;
   }
 }

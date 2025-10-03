@@ -29,10 +29,12 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   http: ^1.2.2   # or latest version
+  http_parser: ^4.0.2
   shared_preferences: ^2.2.2
   image_picker: ^1.0.7
   google_maps_flutter: ^2.2.5
   url_launcher: ^6.1.10
+  intl: ^0.18.1
 
   flutter:
     sdk: flutter

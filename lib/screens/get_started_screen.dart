@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mobile_app/screens/home_screen.dart';
+import 'package:mobile_app/screens/login_screen.dart';
 import 'package:mobile_app/util/navigation_util.dart';
 
 import '../db/constants.dart';
@@ -145,7 +145,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                               () {
                                 NavigationUtil.pushReplacement(
                                   context,
-                                  HomeScreen(),
+                                  LoginScreen(),
                                 );
                               },
                           style: ElevatedButton.styleFrom(

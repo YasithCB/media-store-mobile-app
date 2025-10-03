@@ -13,7 +13,7 @@ double deviceHeight = 0;
 
 const String baseUrl = "http://192.168.100.120:3000";
 
-Map<String, dynamic> currentUser = {};
+late Map<String, dynamic> currentUser;
 String currentUserToken = '';
 
 // ad post data

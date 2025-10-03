@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/api/auth_api.dart';
+import 'package:mobile_app/screens/login_screen.dart';
+import 'package:mobile_app/util/navigation_util.dart';
+import 'package:mobile_app/util/snackbar_util.dart';
+import 'package:mobile_app/widgets/loading_button.dart';
 
 import '../db/constants.dart';
 
@@ -10,21 +15,86 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  final Color _primaryColor = Colors.white;
   final Color lightYellow = Colors.yellow.shade50;
+  bool isOtpSent = false;
+  bool isOtpVerified = false;
+  bool isLoading = false;
+  String resetToken = '';
 
-  final TextEditingController _currentPasswordController =
-      TextEditingController();
-  final TextEditingController _newPasswordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
+  final TextEditingController _emailTextController = TextEditingController();
+  final TextEditingController _otpTextController = TextEditingController();
+  final TextEditingController _newPasswordTextController =
       TextEditingController();
 
   @override
   void dispose() {
-    _currentPasswordController.dispose();
-    _newPasswordController.dispose();
-    _confirmPasswordController.dispose();
+    _emailTextController.dispose();
     super.dispose();
+  }
+
+  forgotPasswordFlow() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    if (isOtpVerified) {
+      // Step 3: Reset Password
+      final resetResponse = await AuthApi.resetPassword(
+        resetToken,
+        _newPasswordTextController.text.trim(),
+      );
+      if (resetResponse["status"] == "success") {
+        SnackBarUtil.show(context, resetResponse["message"]);
+        NavigationUtil.pushReplacement(context, LoginScreen());
+      } else {
+        SnackBarUtil.show(context, resetResponse["message"]);
+      }
+      print("Reset Password Response: $resetResponse");
+    } else if (!isOtpSent) {
+      // Step 1: Request OTP
+      final otpResponse = await AuthApi.forgotPassword(
+        _emailTextController.text.trim(),
+      );
+      print("OTP Response: $otpResponse");
+
+      if (otpResponse["status"] == "success") {
+        SnackBarUtil.show(context, otpResponse["message"]);
+        setState(() {
+          isOtpSent = true;
+        });
+      } else {
+        SnackBarUtil.show(context, otpResponse["message"]);
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
+    } else {
+      // Step 2: Verify OTP
+      final verifyResponse = await AuthApi.verifyOtp(
+        _emailTextController.text.trim(),
+        _otpTextController.text.trim(),
+      );
+      print("Verify OTP Response: $verifyResponse");
+
+      if (verifyResponse["status"] == "success") {
+        setState(() {
+          isOtpVerified = true;
+        });
+        SnackBarUtil.show(context, verifyResponse["message"]);
+      } else {
+        SnackBarUtil.show(context, verifyResponse["message"]);
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
+
+      resetToken = verifyResponse["data"]["resetToken"];
+    }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -66,37 +136,39 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               ),
               const SizedBox(height: 20),
 
-              // Current Password
+              // Email
               _buildTextField(
-                "Current Password",
-                Icons.lock,
+                "Email",
+                Icons.alternate_email,
                 lightYellow,
-                isPassword: true,
-                controller: _currentPasswordController,
+                controller: _emailTextController,
               ),
+              const SizedBox(height: 16),
+
+              // OTP
+              isOtpSent
+                  ? _buildTextField(
+                      "Enter OTP",
+                      Icons.security,
+                      lightYellow,
+                      controller: _otpTextController,
+                    )
+                  : SizedBox(),
               const SizedBox(height: 16),
 
               // New Password
-              _buildTextField(
-                "New Password",
-                Icons.lock,
-                lightYellow,
-                isPassword: true,
-                controller: _newPasswordController,
-              ),
+              isOtpVerified
+                  ? _buildTextField(
+                      "New Password",
+                      Icons.lock_outline,
+                      lightYellow,
+                      isPassword: true,
+                      controller: _newPasswordTextController,
+                    )
+                  : SizedBox(),
               const SizedBox(height: 16),
 
-              // Confirm New Password
-              _buildTextField(
-                "Confirm New Password",
-                Icons.lock_outline,
-                lightYellow,
-                isPassword: true,
-                controller: _confirmPasswordController,
-              ),
-              const SizedBox(height: 30),
-
-              // Save Button
+              // Req Reset Password
               SizedBox(
                 width: double.infinity,
                 height: 50,
@@ -108,20 +180,20 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  onPressed: () {
-                    if (_newPasswordController.text !=
-                        _confirmPasswordController.text) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Passwords do not match")),
-                      );
-                      return;
-                    }
-                    // Handle password change
-                  },
-                  child: const Text(
-                    "Save",
-                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
-                  ),
+                  onPressed: forgotPasswordFlow,
+                  child: isLoading
+                      ? LoadingInButton()
+                      : Text(
+                          isOtpVerified
+                              ? 'Change Password'
+                              : isOtpSent
+                              ? "Submit"
+                              : "Send OTP",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                          ),
+                        ),
                 ),
               ),
             ],

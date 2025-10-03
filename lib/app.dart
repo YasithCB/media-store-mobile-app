@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/db/constants.dart';
 import 'package:mobile_app/screens/splash_screen.dart';
 
 class MyApp extends StatelessWidget {
@@ -6,12 +7,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const Color primaryColor = Color(0xFFE81564);
-
     return MaterialApp(
       title: 'VAL Graphics',
       theme: ThemeData(
-        colorScheme: ColorScheme.light(primary: primaryColor),
+        colorScheme: ColorScheme.light(primary: primaryColorHover),
         useMaterial3: true,
       ),
       darkTheme: ThemeData(

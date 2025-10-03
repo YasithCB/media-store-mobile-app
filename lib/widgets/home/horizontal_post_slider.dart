@@ -70,15 +70,14 @@ class _HorizontalPostSliderState extends State<HorizontalPostSlider> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: Image.network(
-                        item.photos[0], // remote URL
+                        item.photos[0].startsWith("/")
+                            ? "$baseUrl${item.photos[0]}"
+                            : item.photos[0],
                         fit: BoxFit.cover,
                         height: 100,
                         width: 140,
                         errorBuilder: (context, error, stackTrace) {
-                          return const Icon(
-                            Icons.broken_image,
-                            size: 40,
-                          ); // fallback if image fails
+                          return const Icon(Icons.broken_image, size: 40);
                         },
                       ),
                     ),

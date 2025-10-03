@@ -29,6 +29,9 @@ class DealerPostApi {
 
     final response = await http.get(url);
 
+    print('getAllDealerPosts');
+    print(response.body);
+
     if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body);
 
