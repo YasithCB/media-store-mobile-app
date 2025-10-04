@@ -2,9 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mobile_app/api/post_api.dart';
+import 'package:mobile_app/api/dealer_post_api.dart';
 import 'package:mobile_app/screens/home_screen.dart';
 import 'package:mobile_app/util/navigation_util.dart';
+import 'package:mobile_app/widgets/loading_button.dart';
 
 import '../../db/constants.dart';
 
@@ -28,8 +29,6 @@ class _EnterDealerPostDetailsState extends State<EnterDealerPostDetails> {
   final _establishedYearController = TextEditingController();
   final _addressLine1Controller = TextEditingController();
   final _addressLine2Controller = TextEditingController();
-  final _cityController = TextEditingController();
-  final _countryController = TextEditingController();
   final _serviceController = TextEditingController();
   final _tagController = TextEditingController();
 
@@ -40,7 +39,6 @@ class _EnterDealerPostDetailsState extends State<EnterDealerPostDetails> {
 
   File? _logo;
   List<XFile> _photos = [];
-
   final ImagePicker _picker = ImagePicker();
 
   Future<void> pickLogo() async {
@@ -93,7 +91,7 @@ class _EnterDealerPostDetailsState extends State<EnterDealerPostDetails> {
       _isLoading = true;
     });
 
-    final result = await PostApi.createDealerPost(
+    final result = await DealerPostApi.createDealerPost(
       dealerData,
       logo: _logo,
       photos: _photos.map((x) => File(x.path)).toList(),
@@ -442,10 +440,12 @@ class _EnterDealerPostDetailsState extends State<EnterDealerPostDetails> {
                         ),
                       ),
                       onPressed: _submitDealer,
-                      child: const Text(
-                        "Add Dealer",
-                        style: TextStyle(color: Colors.black87),
-                      ),
+                      child: _isLoading
+                          ? LoadingInButton()
+                          : const Text(
+                              "Add Dealer",
+                              style: TextStyle(color: Colors.black87),
+                            ),
                     ),
                   ),
                 ],

@@ -15,7 +15,6 @@ class _MyAdsScreenState extends State<MyAdsScreen> {
   @override
   void initState() {
     super.initState();
-    // _myPosts = PostApi.getPostsByUser();
   }
 
   @override

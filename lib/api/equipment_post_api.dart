@@ -6,20 +6,60 @@ import '../db/constants.dart';
 import '../models/equipment_post_model.dart';
 
 class EquipmentPostApi {
-  /// Create Equipment Post
-  static Future<void> createEquipmentPost(Map<String, dynamic> postData) async {
-    final url = Uri.parse("$baseUrl/equipment-posts");
+  static Future<Map<String, dynamic>> createEquipmentPost({
+    required String title,
+    required String contact,
+    required int categoryId,
+    required int subcategoryId,
+    String? price,
+    String? description,
+    String? brand,
+    String? model,
+    String? usage,
+    String? itemCondition,
+    String? address1,
+    String? address2,
+    String? city,
+    String? country,
+    String? location,
+    List<String>? imagePaths,
+  }) async {
+    var uri = Uri.parse("$baseUrl/equipment-posts");
+    var request = http.MultipartRequest("POST", uri);
 
-    final response = await http.post(
-      url,
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode(postData),
-    );
+    request.fields['title'] = title;
+    request.fields['contact'] = contact;
+    request.fields['category_id'] = categoryId.toString();
+    request.fields['subcategory_id'] = subcategoryId.toString();
+    if (price != null) request.fields['price'] = price;
+    if (description != null) request.fields['description'] = description;
+    if (brand != null) request.fields['brand'] = brand;
+    if (model != null) request.fields['model'] = model;
+    if (usage != null) request.fields['usage'] = usage;
+    if (itemCondition != null) request.fields['item_condition'] = itemCondition;
+    if (address1 != null) request.fields['address_line1'] = address1;
+    if (address2 != null) request.fields['address_line2'] = address2;
+    if (city != null) request.fields['city'] = city;
+    if (country != null) request.fields['country'] = country;
+    if (location != null) request.fields['location'] = location;
 
-    if (response.statusCode == 201) {
-      print("✅ Equipment post created successfully");
+    if (imagePaths != null) {
+      for (var path in imagePaths) {
+        request.files.add(await http.MultipartFile.fromPath("photos", path));
+      }
+    }
+
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return jsonDecode(response.body);
     } else {
-      print("❌ Failed to create equipment post: ${response.body}");
+      return {
+        "status": "error",
+        "code": response.statusCode,
+        "message": response.body,
+      };
     }
   }
 

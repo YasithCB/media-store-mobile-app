@@ -3,8 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile_app/api/equipment_post_api.dart';
+import 'package:mobile_app/widgets/loading_button.dart';
 
 import '../../db/constants.dart';
+import '../../util/navigation_util.dart';
+import '../home_screen.dart';
 
 class EnterPostDetails extends StatefulWidget {
   const EnterPostDetails({super.key});
@@ -20,9 +23,10 @@ class _EnterPostDetailsState extends State<EnterPostDetails> {
   final _descriptionController = TextEditingController();
   final _modelController = TextEditingController();
   final _brandController = TextEditingController();
-
   final _addressLine1Controller = TextEditingController();
   final _addressLine2Controller = TextEditingController();
+
+  bool _isLoading = false;
 
   String? _selectedUsage;
   String? _selectedCondition;
@@ -33,41 +37,47 @@ class _EnterPostDetailsState extends State<EnterPostDetails> {
 
   final ImagePicker _picker = ImagePicker();
 
-  void _submitPost() async {
-    final postData = {
-      "title": _titleController.text,
-      "contact": _contactController.text,
-      "price": double.tryParse(_priceController.text) ?? 0.0,
-      "description": _descriptionController.text,
-      "brand": _brandController.text,
-      "model": _modelController.text,
-      "usage": _selectedUsage,
-      "item_condition": _selectedCondition,
-      "address_line1": _addressLine1Controller.text,
-      "address_line2": _addressLine2Controller.text,
-      "location": _selectedLocation,
-      "photos": _selectedPhotos, // must be a List<String>
-    };
+  Future<void> pickPhotos() async {
+    final List<XFile>? resultList = await _picker.pickMultiImage(
+      imageQuality: 80, // forces JPEG
+    );
 
-    print("Submitting: $postData");
-
-    await EquipmentPostApi.createEquipmentPost(postData);
+    if (resultList != null) {
+      setState(() {
+        _selectedPhotos = resultList;
+      });
+    }
   }
 
-  Future<void> loadAssets() async {
-    try {
-      final List<XFile>? resultList = await _picker.pickMultiImage(
-        imageQuality: 80, // optional: compress image quality
-      );
+  void _submitPost() async {
+    setState(() {
+      _isLoading = true;
+    });
 
-      if (resultList != null && mounted) {
-        setState(() {
-          _selectedPhotos = resultList;
-        });
-      }
-    } catch (e) {
-      debugPrint(e.toString());
+    final result = await EquipmentPostApi.createEquipmentPost(
+      title: _titleController.text,
+      contact: _contactController.text,
+      categoryId: post_category_id,
+      subcategoryId: post_subcategory_id,
+    );
+
+    print('Submitting createEquipmentPost result');
+    print(result);
+
+    if (result["status"] == "success") {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Dealer created successfully")));
+      NavigationUtil.pushAndRemoveUntil(context, HomeScreen());
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error: ${result['message']}")));
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -143,10 +153,7 @@ class _EnterPostDetailsState extends State<EnterPostDetails> {
 
                 // Add Photos Button
                 ElevatedButton.icon(
-                  onPressed: () {
-                    // TODO: Add photo picker
-                    loadAssets();
-                  },
+                  onPressed: pickPhotos,
                   icon: const Icon(Icons.photo_camera, color: Colors.black),
                   label: const Text(
                     "Add Photos",
@@ -271,16 +278,16 @@ class _EnterPostDetailsState extends State<EnterPostDetails> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    onPressed: () {
-                      // submit post todo
-                    },
-                    child: const Text(
-                      "Submit Post",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 18,
-                      ),
-                    ),
+                    onPressed: _submitPost,
+                    child: _isLoading
+                        ? LoadingInButton()
+                        : const Text(
+                            "Submit Post",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18,
+                            ),
+                          ),
                   ),
                 ),
                 const SizedBox(height: 10),
