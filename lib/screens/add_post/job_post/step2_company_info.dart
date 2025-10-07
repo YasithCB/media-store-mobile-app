@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mobile_app/db/constants.dart';
 
 import '../../../models/job_post_data.dart';
+import '../../../util/snackbar_util.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_text_field.dart';
 
@@ -69,11 +70,24 @@ class _AddJobStep2CompanyInfoState extends State<AddJobStep2CompanyInfo> {
     }
   }
 
+  bool validateForm() {
+    if (_companyController.text.isEmpty ||
+        _locationController.text.isEmpty ||
+        _countryController.text.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
   void _nextStep() {
-    widget.data.companyName = _companyController.text.trim();
-    widget.data.location = _locationController.text.trim();
-    widget.data.country = _countryController.text.trim();
-    widget.onNext();
+    if (validateForm()) {
+      widget.data.companyName = _companyController.text.trim();
+      widget.data.location = _locationController.text.trim();
+      widget.data.country = _countryController.text.trim();
+      widget.onNext();
+    } else {
+      SnackBarUtil.show(context, 'Fill all fields to continue!');
+    }
   }
 
   @override

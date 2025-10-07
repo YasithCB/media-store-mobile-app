@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/db/constants.dart';
 import 'package:mobile_app/screens/add_post/enter_dealer_post_details.dart';
-import 'package:mobile_app/screens/add_post/enter_post_details.dart';
+import 'package:mobile_app/screens/add_post/equipment_post/add_equipment_wizard.dart';
 import 'package:mobile_app/screens/add_post/job_post/add_job_wizard.dart';
 import 'package:mobile_app/util/navigation_util.dart';
 import 'package:mobile_app/widgets/loading.dart';
@@ -123,7 +123,7 @@ class _SelectSubCategoryState extends State<SelectSubCategory> {
                           post_subcategory_title = sub.name;
 
                           if (post_category_id == 1) {
-                            NavigationUtil.push(context, EnterPostDetails());
+                            NavigationUtil.push(context, AddEquipmentWizard());
                           } else if (post_category_id == 2) {
                             NavigationUtil.push(context, AddJobWizard());
                           } else if (post_category_id == 3) {

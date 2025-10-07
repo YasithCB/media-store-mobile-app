@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -59,4 +61,8 @@ String formatDate(dynamic date, {String format = 'MMM d yyyy'}) {
   } catch (_) {
     return "N/A";
   }
+}
+
+List<File> convertPathsToFiles(List<String> paths) {
+  return paths.map((path) => File(path)).toList();
 }

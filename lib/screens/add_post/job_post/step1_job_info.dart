@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/models/job_post_data.dart';
+import 'package:mobile_app/util/snackbar_util.dart';
 
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_text_field.dart';
@@ -38,10 +39,21 @@ class _AddJobStep1JobInfoState extends State<AddJobStep1JobInfo> {
     super.dispose();
   }
 
+  bool validateForm() {
+    if (_titleController.text.isEmpty || _industryController.text.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
   void _nextStep() {
-    widget.data.title = _titleController.text.trim();
-    widget.data.industry = _industryController.text.trim();
-    widget.onNext();
+    if (validateForm()) {
+      widget.data.title = _titleController.text.trim();
+      widget.data.industry = _industryController.text.trim();
+      widget.onNext();
+    } else {
+      SnackBarUtil.show(context, 'Fill all fields to continue!');
+    }
   }
 
   @override

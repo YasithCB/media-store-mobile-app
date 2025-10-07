@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../models/job_post_data.dart';
+import '../../../util/snackbar_util.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_text_field.dart';
 
@@ -48,12 +49,26 @@ class _AddJobStep4DescriptionContactState
     super.dispose();
   }
 
+  bool validateForm() {
+    if (_descController.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _phoneController.text.isEmpty ||
+        _applyUrlController.text.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
   void _nextStep() {
-    widget.data.description = _descController.text.trim();
-    widget.data.email = _emailController.text.trim();
-    widget.data.phone = _phoneController.text.trim();
-    widget.data.applicationUrl = _applyUrlController.text.trim();
-    widget.onNext();
+    if (validateForm()) {
+      widget.data.description = _descController.text.trim();
+      widget.data.email = _emailController.text.trim();
+      widget.data.phone = _phoneController.text.trim();
+      widget.data.applicationUrl = _applyUrlController.text.trim();
+      widget.onNext();
+    } else {
+      SnackBarUtil.show(context, 'Fill all fields to continue!');
+    }
   }
 
   @override
@@ -124,6 +139,7 @@ class _AddJobStep4DescriptionContactState
                     ),
                   ),
                 ),
+
                 Row(
                   children: [
                     Expanded(

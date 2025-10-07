@@ -11,7 +11,7 @@ class JobPostData {
   String experienceLevel = '';
   bool remote = false;
   bool isHiring = true;
-  String salary = '';
+  String price = '';
   String salaryType = '';
   String location = '';
   String country = '';
@@ -44,7 +44,7 @@ class JobPostData {
     isHiring =
         json['is_hiring'] != null &&
         (json['is_hiring'] == 1 || json['is_hiring'] == "1");
-    salary = json['salary']?.toString() ?? '';
+    price = json['salary']?.toString() ?? '';
     salaryType = json['salary_type'] ?? '';
     location = json['location'] ?? '';
     country = json['country'] ?? '';
@@ -100,7 +100,7 @@ class JobPostData {
     'experience_level': experienceLevel,
     'remote': remote ? 1 : 0,
     'is_hiring': isHiring ? 1 : 0,
-    'salary': salary,
+    'salary': price,
     'salary_type': salaryType,
     'location': location,
     'country': country,

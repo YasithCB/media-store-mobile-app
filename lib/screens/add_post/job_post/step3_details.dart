@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../models/job_post_data.dart';
+import '../../../util/snackbar_util.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_text_field.dart';
 
@@ -33,7 +34,7 @@ class _AddJobStep3DetailsState extends State<AddJobStep3Details> {
   @override
   void initState() {
     super.initState();
-    _salaryController = TextEditingController(text: widget.data.salary);
+    _salaryController = TextEditingController(text: widget.data.price);
     _tagsController = TextEditingController(text: widget.data.tags.join(','));
     _salaryType = widget.data.salaryType.isEmpty
         ? null
@@ -52,20 +53,34 @@ class _AddJobStep3DetailsState extends State<AddJobStep3Details> {
     super.dispose();
   }
 
+  bool validateForm() {
+    if (_salaryController.text.isEmpty ||
+        _tagsController.text.isEmpty ||
+        _salaryType == '' ||
+        _jobType == '' ||
+        _experience == '') {
+      return false;
+    }
+    return true;
+  }
+
   void _nextStep() {
-    widget.data.salary = _salaryController.text.trim();
-    widget.data.salaryType = _salaryType ?? '';
-    widget.data.jobType = _jobType ?? '';
-    widget.data.experienceLevel = _experience ?? '';
-    widget.data.tags = _tagsController.text
-        .split(',')
-        .map((s) => s.trim())
-        .where((s) => s.isNotEmpty)
-        .toList();
-    widget.data.remote = _remote;
-    widget.data.isHiring =
-        _isHiring; // note: typo safe - will correct below in JSON
-    widget.onNext();
+    if (validateForm()) {
+      widget.data.price = _salaryController.text.trim();
+      widget.data.salaryType = _salaryType ?? '';
+      widget.data.jobType = _jobType ?? '';
+      widget.data.experienceLevel = _experience ?? '';
+      widget.data.tags = _tagsController.text
+          .split(',')
+          .map((s) => s.trim())
+          .where((s) => s.isNotEmpty)
+          .toList();
+      widget.data.remote = _remote;
+      widget.data.isHiring = _isHiring;
+      widget.onNext();
+    } else {
+      SnackBarUtil.show(context, 'Fill all required fields to continue!');
+    }
   }
 
   @override
@@ -148,7 +163,7 @@ class _AddJobStep3DetailsState extends State<AddJobStep3Details> {
                           color: Colors.black54,
                         ),
                       ),
-                      const SizedBox(height: 12),
+
                       Row(
                         children: [
                           Expanded(

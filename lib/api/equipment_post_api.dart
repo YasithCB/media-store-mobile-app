@@ -1,65 +1,94 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
 
 import '../db/constants.dart';
 import '../models/equipment_post_model.dart';
 
 class EquipmentPostApi {
-  static Future<Map<String, dynamic>> createEquipmentPost({
+  static Future<bool> createEquipmentPost({
     required String title,
     required String contact,
-    required int categoryId,
-    required int subcategoryId,
     String? price,
-    String? description,
+    String description = '',
     String? brand,
     String? model,
     String? usage,
     String? itemCondition,
-    String? address1,
-    String? address2,
-    String? city,
+    String? addressLine1,
+    String? addressLine2,
     String? country,
+    String? city,
     String? location,
-    List<String>? imagePaths,
+    required int categoryId,
+    required int subcategoryId,
+    List<File>? photos,
   }) async {
-    var uri = Uri.parse("$baseUrl/equipment-posts");
-    var request = http.MultipartRequest("POST", uri);
+    try {
+      print("=== createEquipmentPost START ===");
 
-    request.fields['title'] = title;
-    request.fields['contact'] = contact;
-    request.fields['category_id'] = categoryId.toString();
-    request.fields['subcategory_id'] = subcategoryId.toString();
-    if (price != null) request.fields['price'] = price;
-    if (description != null) request.fields['description'] = description;
-    if (brand != null) request.fields['brand'] = brand;
-    if (model != null) request.fields['model'] = model;
-    if (usage != null) request.fields['usage'] = usage;
-    if (itemCondition != null) request.fields['item_condition'] = itemCondition;
-    if (address1 != null) request.fields['address_line1'] = address1;
-    if (address2 != null) request.fields['address_line2'] = address2;
-    if (city != null) request.fields['city'] = city;
-    if (country != null) request.fields['country'] = country;
-    if (location != null) request.fields['location'] = location;
+      print("Base URL: $baseUrl");
+      var uri = Uri.parse("$baseUrl/equipment-posts");
+      print("POST URI: $uri");
 
-    if (imagePaths != null) {
-      for (var path in imagePaths) {
-        request.files.add(await http.MultipartFile.fromPath("photos", path));
+      var request = http.MultipartRequest("POST", uri);
+
+      print("Adding text fields...");
+      request.fields['title'] = title;
+      request.fields['contact'] = contact;
+      if (price != null) request.fields['price'] = price;
+      request.fields['description'] = description;
+      if (brand != null) request.fields['brand'] = brand;
+      if (model != null) request.fields['model'] = model;
+      if (usage != null) request.fields['usage'] = usage;
+      if (itemCondition != null)
+        request.fields['item_condition'] = itemCondition;
+      if (addressLine1 != null) request.fields['address_line1'] = addressLine1;
+      if (addressLine2 != null) request.fields['address_line2'] = addressLine2;
+      if (country != null) request.fields['country'] = country;
+      if (city != null) request.fields['city'] = city;
+      if (location != null) request.fields['location'] = location;
+      request.fields['category_id'] = categoryId.toString();
+      request.fields['subcategory_id'] = subcategoryId.toString();
+
+      print("Fields added: ${request.fields}");
+
+      if (photos != null && photos.isNotEmpty) {
+        print("Adding ${photos.length} photos...");
+        for (var photo in photos) {
+          print("Photo path: ${photo.path}");
+          if (photo.path == null || photo.path.isEmpty) {
+            print("⚠️ Warning: photo.path is null or empty");
+            continue;
+          }
+          request.files.add(
+            await http.MultipartFile.fromPath(
+              'photos',
+              photo.path,
+              filename: basename(photo.path),
+            ),
+          );
+          print("Added photo: ${basename(photo.path)}");
+        }
+      } else {
+        print("No photos to add.");
       }
-    }
 
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
+      print("Sending request...");
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
 
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return jsonDecode(response.body);
-    } else {
-      return {
-        "status": "error",
-        "code": response.statusCode,
-        "message": response.body,
-      };
+      print("Response status: ${response.statusCode}");
+      print("Response body: ${response.body}");
+      print("=== createEquipmentPost END ===");
+
+      return response.statusCode == 201;
+    } catch (e, stacktrace) {
+      print("Exception in createEquipmentPost: $e");
+      print(stacktrace);
+      return false;
     }
   }
 

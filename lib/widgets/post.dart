@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app/util/navigation_util.dart';
 import 'package:mobile_app/widgets/post_details/equipment_post_details.dart';
 
+import '../db/constants.dart';
+
 class Post extends StatelessWidget {
   final dynamic post;
 
@@ -37,7 +39,21 @@ class Post extends StatelessWidget {
               child: SizedBox(
                 height: 200,
                 width: double.infinity,
-                child: Image.network(post.photos[0], fit: BoxFit.cover),
+                child: post.categoryId == 1
+                    ? Image.network(
+                        post.photos[0].startsWith("uploads")
+                            ? "$baseUrl/${post.photos[0]}"
+                            : post.photos[0],
+                        fit: BoxFit.cover,
+                      )
+                    : post.categoryId == 2
+                    ? Image.network(
+                        post.logoUrl.startsWith("uploads")
+                            ? "$baseUrl/${post.logoUrl}"
+                            : post.logoUrl,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.network(post.photos[0], fit: BoxFit.cover),
               ),
             ),
             Padding(

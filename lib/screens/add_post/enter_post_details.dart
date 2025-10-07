@@ -64,7 +64,7 @@ class _EnterPostDetailsState extends State<EnterPostDetails> {
     print('Submitting createEquipmentPost result');
     print(result);
 
-    if (result["status"] == "success") {
+    if (result) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("Dealer created successfully")));
@@ -72,7 +72,7 @@ class _EnterPostDetailsState extends State<EnterPostDetails> {
     } else {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text("Error: ${result['message']}")));
+      ).showSnackBar(SnackBar(content: Text("Error")));
     }
 
     setState(() {

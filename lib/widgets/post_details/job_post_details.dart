@@ -121,7 +121,7 @@ class JobPostDetails extends StatelessWidget {
 
                         // Salary
                         Text(
-                          "Salary: ${post.salary} ${post.salaryType}",
+                          "Salary: ${post.price} ${post.salaryType}",
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,

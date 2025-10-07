@@ -62,9 +62,13 @@ class _HorizontalPostSliderState extends State<HorizontalPostSlider> {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(12),
                             child: Image.network(
-                              item.logoUrl.startsWith("uploads")
-                                  ? "$baseUrl/${item.logoUrl}"
-                                  : item.logoUrl,
+                              widget.categoryId == 1
+                                  ? (item.photos[0].startsWith("uploads")
+                                        ? "$baseUrl/${item.photos[0]}"
+                                        : item.photos[0])
+                                  : (item.logoUrl.startsWith("uploads")
+                                        ? "$baseUrl/${item.logoUrl}"
+                                        : item.logoUrl),
                               fit: BoxFit.cover,
                               height: 100,
                               width: 140,
@@ -78,7 +82,7 @@ class _HorizontalPostSliderState extends State<HorizontalPostSlider> {
                           Text(
                             widget.categoryId == 3
                                 ? item.title
-                                : 'AED ${item.salary.toString()}',
+                                : 'AED ${item.price.toString()}',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w700,
