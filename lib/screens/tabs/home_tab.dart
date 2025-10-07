@@ -3,8 +3,8 @@ import 'package:mobile_app/api/dealer_post_api.dart';
 import 'package:mobile_app/api/equipment_post_api.dart';
 import 'package:mobile_app/api/job_post_api.dart';
 import 'package:mobile_app/db/constants.dart';
-import 'package:mobile_app/models/dealer_post_model.dart';
-import 'package:mobile_app/models/equipment_post_model.dart';
+import 'package:mobile_app/models/dealer_post_data.dart';
+import 'package:mobile_app/models/equipment_post_data.dart';
 import 'package:mobile_app/models/job_post_data.dart';
 import 'package:mobile_app/widgets/home/banner_swiper.dart';
 import 'package:mobile_app/widgets/home/categories_grid.dart';
@@ -165,13 +165,13 @@ class _HomeTabState extends State<HomeTab> {
                 }
 
                 final results = snapshot.data!;
-                final popularPosts = results[0] as List<EquipmentPostModel>;
+                final popularPosts = results[0] as List<EquipmentPostData>;
                 final videoAndCameraPosts =
-                    results[1] as List<EquipmentPostModel>;
+                    results[1] as List<EquipmentPostData>;
                 final audioAndSoundPosts =
-                    results[2] as List<EquipmentPostModel>;
+                    results[2] as List<EquipmentPostData>;
                 final popularJobs = results[3] as List<JobPostData>;
-                final popularDealers = results[4] as List<DealerPostModel>;
+                final popularDealers = results[4] as List<DealerPostData>;
 
                 return Expanded(
                   child: SingleChildScrollView(
@@ -195,19 +195,10 @@ class _HomeTabState extends State<HomeTab> {
                         const SizedBox(height: 8),
 
                         HorizontalPostSlider(
-                          title: 'Popular Jobs',
-                          postsList: popularJobs,
-                          categoryId: 2,
-                        ),
-
-                        const SizedBox(height: 8),
-
-                        HorizontalPostSlider(
                           title: 'Popular Dealers',
                           postsList: popularDealers,
                           categoryId: 3,
                         ),
-
                         const SizedBox(height: 8),
 
                         HorizontalPostSlider(
@@ -215,7 +206,6 @@ class _HomeTabState extends State<HomeTab> {
                           postsList: videoAndCameraPosts,
                           categoryId: 1,
                         ),
-
                         const SizedBox(height: 8),
 
                         HorizontalPostSlider(
@@ -223,7 +213,13 @@ class _HomeTabState extends State<HomeTab> {
                           postsList: audioAndSoundPosts,
                           categoryId: 1,
                         ),
+                        const SizedBox(height: 8),
 
+                        HorizontalPostSlider(
+                          title: 'Popular Jobs',
+                          postsList: popularJobs,
+                          categoryId: 2,
+                        ),
                         const SizedBox(height: 8),
 
                         SponsoredPoster(

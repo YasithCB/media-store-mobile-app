@@ -29,6 +29,12 @@ class _AddEquipmentStep3PhotosState extends State<AddEquipmentStep3Photos> {
   final ImagePicker _picker = ImagePicker();
   final _descController = TextEditingController();
 
+  final List<String> usageOptions = ["Light Use", "Moderate Use", "Heavy Use"];
+  final List<String> conditionOptions = ["New", "Good", "Fair", "Poor"];
+
+  String? selectedUsage;
+  String? selectedCondition;
+
   Future<void> _pickImages() async {
     final List<XFile>? images = await _picker.pickMultiImage();
     if (images != null && images.isNotEmpty) {
@@ -38,10 +44,14 @@ class _AddEquipmentStep3PhotosState extends State<AddEquipmentStep3Photos> {
   }
 
   void _nextStep() {
-    if (widget.data.photos.isEmpty) {
+    if (widget.data.photos.isEmpty ||
+        selectedUsage == '' ||
+        selectedCondition == '') {
       SnackBarUtil.show(context, 'Please add at least one photo.');
       return;
     }
+    widget.data.usage = selectedUsage;
+    widget.data.itemCondition = selectedCondition;
     widget.data.description = _descController.text.trim();
     widget.onNext();
   }
@@ -143,6 +153,52 @@ class _AddEquipmentStep3PhotosState extends State<AddEquipmentStep3Photos> {
               ),
 
               const SizedBox(height: 16),
+
+              // Usage Dropdown
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(
+                  labelText: "Usage",
+                  border: OutlineInputBorder(),
+                ),
+                value: selectedUsage,
+                items: usageOptions
+                    .map(
+                      (usage) =>
+                          DropdownMenuItem(value: usage, child: Text(usage)),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    selectedUsage = value;
+                  });
+                },
+              ),
+
+              const SizedBox(height: 12),
+
+              // Item Condition Dropdown
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(
+                  labelText: "Item Condition",
+                  border: OutlineInputBorder(),
+                ),
+                value: selectedCondition,
+                items: conditionOptions
+                    .map(
+                      (condition) => DropdownMenuItem(
+                        value: condition,
+                        child: Text(condition),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    selectedCondition = value;
+                  });
+                },
+              ),
+
+              const SizedBox(height: 12),
 
               // Description field
               CustomTextField(

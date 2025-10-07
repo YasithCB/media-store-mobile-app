@@ -1,20 +1,28 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:mobile_app/models/post_summary_data.dart';
 
 import '../db/constants.dart';
 import '../models/post_model.dart';
 
 class PostApi {
   // Get all posts
-  static Future<List<PostModel>> getAllPosts() async {
+  static Future<List<PostSummaryData>> fetchPostSummaries() async {
     final response = await http.get(Uri.parse("$baseUrl/posts"));
+    print('fetchPostSummaries resp');
+    print(response.body);
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      final List postsJson = data['data'];
-      return postsJson.map((json) => PostModel.fromJson(json)).toList();
+      final Map<String, dynamic> jsonData = json.decode(response.body);
+
+      if (jsonData.containsKey("data")) {
+        return (jsonData["data"] as List)
+            .map((item) => PostSummaryData.fromJson(item))
+            .toList();
+      }
+      throw Exception("No data field in API response");
     } else {
-      throw Exception("Failed to load all posts");
+      throw Exception("Failed to fetch posts");
     }
   }
 

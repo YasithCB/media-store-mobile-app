@@ -2,9 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mobile_app/api/dealer_post_api.dart';
-import 'package:mobile_app/screens/home_screen.dart';
-import 'package:mobile_app/util/navigation_util.dart';
 import 'package:mobile_app/widgets/loading_button.dart';
 
 import '../../db/constants.dart';
@@ -66,56 +63,56 @@ class _EnterDealerPostDetailsState extends State<EnterDealerPostDetails> {
   }
 
   void _submitDealer() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    final dealerData = {
-      "name": _nameController.text,
-      "description": _descriptionController.text,
-      "phone": _phoneController.text,
-      "whatsapp": _whatsappController.text,
-      "email": _emailController.text,
-      "website_url": _websiteController.text,
-      "established_year": _establishedYearController.text,
-      "services_starting_from": _startingPriceController.text,
-      "address_line1": _addressLine1Controller.text,
-      "address_line2": _addressLine2Controller.text,
-      "city": post_emirate,
-      "country": post_country,
-      "category_id": post_category_id,
-      "subcategory_id": post_subcategory_id,
-    };
-
-    print("Submitting dealer: $dealerData");
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    final result = await DealerPostApi.createDealerPost(
-      dealerData,
-      logo: _logo,
-      photos: _photos.map((x) => File(x.path)).toList(),
-      servicesList: _servicesList,
-      tagsList: _tagsList,
-    );
-
-    print('Submitting dealer result');
-    print(result);
-
-    if (result["status"] == "success") {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Dealer created successfully")));
-      NavigationUtil.pushAndRemoveUntil(context, HomeScreen());
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Error: ${result['message']}")));
-    }
-
-    setState(() {
-      _isLoading = false;
-    });
+    // if (!_formKey.currentState!.validate()) return;
+    //
+    // final dealerData = {
+    //   "name": _nameController.text,
+    //   "description": _descriptionController.text,
+    //   "phone": _phoneController.text,
+    //   "whatsapp": _whatsappController.text,
+    //   "email": _emailController.text,
+    //   "website_url": _websiteController.text,
+    //   "established_year": _establishedYearController.text,
+    //   "services_starting_from": _startingPriceController.text,
+    //   "address_line1": _addressLine1Controller.text,
+    //   "address_line2": _addressLine2Controller.text,
+    //   "city": post_emirate,
+    //   "country": post_country,
+    //   "category_id": post_category_id,
+    //   "subcategory_id": post_subcategory_id,
+    // };
+    //
+    // print("Submitting dealer: $dealerData");
+    //
+    // setState(() {
+    //   _isLoading = true;
+    // });
+    //
+    // final result = await DealerPostApi.createDealerPost(
+    //   dealerData,
+    //   logo: _logo,
+    //   photos: _photos.map((x) => File(x.path)).toList(),
+    //   servicesList: _servicesList,
+    //   tagsList: _tagsList,
+    // );
+    //
+    // print('Submitting dealer result');
+    // print(result);
+    //
+    // if (result["status"] == "success") {
+    //   ScaffoldMessenger.of(
+    //     context,
+    //   ).showSnackBar(SnackBar(content: Text("Dealer created successfully")));
+    //   NavigationUtil.pushAndRemoveUntil(context, HomeScreen());
+    // } else {
+    //   ScaffoldMessenger.of(
+    //     context,
+    //   ).showSnackBar(SnackBar(content: Text("Error: ${result['message']}")));
+    // }
+    //
+    // setState(() {
+    //   _isLoading = false;
+    // });
   }
 
   @override

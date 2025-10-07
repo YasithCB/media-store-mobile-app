@@ -3,8 +3,8 @@ import 'package:mobile_app/api/dealer_post_api.dart';
 import 'package:mobile_app/api/equipment_post_api.dart';
 import 'package:mobile_app/api/job_post_api.dart';
 import 'package:mobile_app/db/constants.dart';
-import 'package:mobile_app/models/dealer_post_model.dart';
-import 'package:mobile_app/models/equipment_post_model.dart';
+import 'package:mobile_app/models/dealer_post_data.dart';
+import 'package:mobile_app/models/equipment_post_data.dart';
 import 'package:mobile_app/models/job_post_data.dart';
 
 import '../../widgets/post.dart';
@@ -32,9 +32,9 @@ class _PostScreenState extends State<PostScreen> {
   String selectedSort = "Popularity";
 
   late Future<List<dynamic>> _posts;
-  late Future<List<EquipmentPostModel>> _posts_equipment;
+  late Future<List<EquipmentPostData>> _posts_equipment;
   late Future<List<JobPostData>> _posts_jobs;
-  late Future<List<DealerPostModel>> _posts_dealers;
+  late Future<List<DealerPostData>> _posts_dealers;
 
   @override
   void initState() {

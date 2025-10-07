@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 class JobPostData {
+  String postId = '';
   String title = '';
   String companyName = '';
   String? logoUrl;
@@ -26,6 +27,7 @@ class JobPostData {
   JobPostData();
 
   JobPostData.fromJson(Map<String, dynamic> json) {
+    postId = json['post_id'] ?? '';
     title = json['title'] ?? '';
     companyName = json['company_name'] ?? '';
     logoUrl = json['logo'];
@@ -90,6 +92,7 @@ class JobPostData {
   }
 
   Map<String, dynamic> toJson() => {
+    'post_id': postId,
     'title': title,
     'company_name': companyName,
     'logo': logoUrl,

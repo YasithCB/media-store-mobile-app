@@ -3,9 +3,10 @@ import 'package:mobile_app/util/navigation_util.dart';
 import 'package:mobile_app/widgets/post_details/equipment_post_details.dart';
 
 import '../db/constants.dart';
+import '../models/post_summary_data.dart';
 
 class Post extends StatelessWidget {
-  final dynamic post;
+  final PostSummaryData post;
 
   const Post({super.key, required this.post});
 
@@ -13,7 +14,10 @@ class Post extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        NavigationUtil.push(context, EquipmentPostDetails(post: post));
+        NavigationUtil.push(
+          context,
+          EquipmentPostDetails(post: null, postId: post.id),
+        );
       },
       child: Container(
         width: double.infinity,
@@ -39,21 +43,7 @@ class Post extends StatelessWidget {
               child: SizedBox(
                 height: 200,
                 width: double.infinity,
-                child: post.categoryId == 1
-                    ? Image.network(
-                        post.photos[0].startsWith("uploads")
-                            ? "$baseUrl/${post.photos[0]}"
-                            : post.photos[0],
-                        fit: BoxFit.cover,
-                      )
-                    : post.categoryId == 2
-                    ? Image.network(
-                        post.logoUrl.startsWith("uploads")
-                            ? "$baseUrl/${post.logoUrl}"
-                            : post.logoUrl,
-                        fit: BoxFit.cover,
-                      )
-                    : Image.network(post.photos[0], fit: BoxFit.cover),
+                child: _buildImage(post),
               ),
             ),
             Padding(
@@ -72,7 +62,7 @@ class Post extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    post.description,
+                    post.description ?? "",
                     style: const TextStyle(fontSize: 10, color: Colors.grey),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -82,7 +72,7 @@ class Post extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
-                        children: [
+                        children: const [
                           Icon(
                             Icons.star,
                             color: Colors.orangeAccent,
@@ -90,19 +80,27 @@ class Post extends StatelessWidget {
                           ),
                           SizedBox(width: 4),
                           Text(
-                            '4.0',
-                            // post.rating.toString(),
+                            '4.0', // You can make rating dynamic later
                             style: TextStyle(fontSize: 12),
                           ),
                         ],
                       ),
-                      Text(
-                        "From AED${post.price}",
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
+                      if (post.price != null)
+                        Text(
+                          "From AED ${post.price}",
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
+                      if (post.salary != null)
+                        Text(
+                          "Salary: ${post.salary}",
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                     ],
                   ),
                 ],
@@ -112,5 +110,25 @@ class Post extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildImage(PostSummaryData post) {
+    if (post.image != null && post.image!.isNotEmpty) {
+      String imageUrl = post.image!;
+      if (imageUrl.startsWith("/")) {
+        imageUrl = "$baseUrl$imageUrl";
+      }
+      return Image.network(imageUrl, fit: BoxFit.cover);
+    }
+
+    if (post.logo != null && post.logo!.isNotEmpty) {
+      String logoUrl = post.logo!;
+      if (logoUrl.startsWith("/")) {
+        logoUrl = "$baseUrl$logoUrl";
+      }
+      return Image.network(logoUrl, fit: BoxFit.cover);
+    }
+
+    return const Center(child: Icon(Icons.image, size: 50, color: Colors.grey));
   }
 }

@@ -5,9 +5,14 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../models/equipment_post_model.dart';
 
 class EquipmentPostDetails extends StatelessWidget {
-  final EquipmentPostModel post;
+  final EquipmentPostModel? post;
+  final String postId;
 
-  const EquipmentPostDetails({Key? key, required this.post}) : super(key: key);
+  const EquipmentPostDetails({
+    Key? key,
+    required this.post,
+    required this.postId,
+  }) : super(key: key);
 
   void callSeller(String phoneNumber) async {
     final Uri callUri = Uri(scheme: 'tel', path: phoneNumber);
@@ -40,7 +45,7 @@ class EquipmentPostDetails extends StatelessWidget {
                   ),
                   const SizedBox(width: 16),
                   Text(
-                    post.model ?? 'Item Details',
+                    post!.model ?? 'Item Details',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -50,7 +55,7 @@ class EquipmentPostDetails extends StatelessWidget {
             Expanded(
               child: ListView(
                 children: [
-                  _buildImagesSection(post.photos),
+                  _buildImagesSection(post!.photos),
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
@@ -59,7 +64,7 @@ class EquipmentPostDetails extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              post.title,
+                              post!.title,
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -78,7 +83,7 @@ class EquipmentPostDetails extends StatelessWidget {
                           ],
                         ),
                         Text(
-                          "AED ${post.price.toStringAsFixed(2)}",
+                          "AED ${post!.price.toStringAsFixed(2)}",
                           style: TextStyle(
                             fontSize: 20,
                             color: primaryColorHover2,
@@ -86,7 +91,7 @@ class EquipmentPostDetails extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        _buildAttributes(post.toAttributesMap()),
+                        _buildAttributes(post!.toAttributesMap()),
                         const SizedBox(height: 16),
                         const Text(
                           "Description",
@@ -97,13 +102,13 @@ class EquipmentPostDetails extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          post.description,
+                          post!.description,
                           style: const TextStyle(fontSize: 13),
                         ),
                         const SizedBox(height: 16),
                         const Divider(color: Colors.black26),
                         const SizedBox(height: 8),
-                        _buildSellerInfo(post.contact),
+                        _buildSellerInfo(post!.contact),
                         const SizedBox(height: 80), // space for bottom bar
                       ],
                     ),
@@ -111,7 +116,7 @@ class EquipmentPostDetails extends StatelessWidget {
                 ],
               ),
             ),
-            _buildBottomBar(context, post.contact),
+            _buildBottomBar(context, post!.contact),
           ],
         ),
       ),
@@ -214,7 +219,7 @@ class EquipmentPostDetails extends StatelessWidget {
                 style: TextStyle(color: Colors.black),
               ),
               onPressed: () {
-                callSeller(post.contact); // pass seller contact
+                callSeller(post!.contact); // pass seller contact
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryColor, // your custom color

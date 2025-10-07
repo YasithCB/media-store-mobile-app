@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:mobile_app/db/constants.dart';
+import 'package:mobile_app/screens/home_screen.dart';
+import 'package:mobile_app/util/navigation_util.dart';
 import 'package:mobile_app/util/snackbar_util.dart';
 import 'package:mobile_app/widgets/loading.dart';
 
@@ -80,7 +82,9 @@ class _AddEquipmentStep4ReviewState extends State<AddEquipmentStep4Review> {
       success ? "Equipment posted successfully" : "Error posting equipment",
     );
 
-    if (success) widget.onSubmit();
+    if (success) {
+      NavigationUtil.pushAndRemoveUntil(context, HomeScreen());
+    }
   }
 
   @override

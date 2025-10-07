@@ -1,4 +1,5 @@
 class EquipmentPostData {
+  String postId;
   String title;
   String contact;
   String? price;
@@ -18,6 +19,7 @@ class EquipmentPostData {
 
   // ✅ Default constructor
   EquipmentPostData({
+    this.postId = '',
     this.title = '',
     this.contact = '',
     this.price,
@@ -37,6 +39,7 @@ class EquipmentPostData {
   }) : photos = photos ?? [];
 
   Map<String, dynamic> toJson() => {
+    'post_id': postId,
     'title': title,
     'contact': contact,
     'price': price,
@@ -68,6 +71,7 @@ class EquipmentPostData {
     }
 
     return EquipmentPostData(
+      postId: json['post_id'] ?? '',
       title: json['title'] ?? '',
       contact: json['contact'] ?? '',
       price: json['price']?.toString(),

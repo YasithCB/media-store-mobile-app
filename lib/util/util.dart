@@ -66,3 +66,7 @@ String formatDate(dynamic date, {String format = 'MMM d yyyy'}) {
 List<File> convertPathsToFiles(List<String> paths) {
   return paths.map((path) => File(path)).toList();
 }
+
+String removeLeadingSlash(String url) {
+  return url.startsWith('/') ? url.substring(1) : url;
+}

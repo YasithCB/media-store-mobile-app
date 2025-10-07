@@ -10,6 +10,28 @@ import '../db/constants.dart';
 class JobPostApi {
   static const String endpoint = "$baseUrl/job-posts";
 
+  static Future<JobPostData?> getJobPostById(String postId) async {
+    final url = Uri.parse("$endpoint/$postId");
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final decoded = jsonDecode(response.body);
+
+      if (decoded['status'] == "success" && decoded['data'] != null) {
+        print("Job post data for ID $postId: ${decoded['data']}");
+        return JobPostData.fromJson(decoded['data']);
+      } else {
+        print("No job post found with ID $postId");
+        return null;
+      }
+    } else {
+      throw Exception(
+        "Failed to fetch job post with ID $postId: ${response.body}",
+      );
+    }
+  }
+
   /// GET: All job posts
   static Future<List<JobPostData>> getAllJobPosts() async {
     final url = Uri.parse(endpoint);

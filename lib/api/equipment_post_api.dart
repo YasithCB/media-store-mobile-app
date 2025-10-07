@@ -2,12 +2,33 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:mobile_app/models/equipment_post_data.dart';
 import 'package:path/path.dart';
 
 import '../db/constants.dart';
-import '../models/equipment_post_model.dart';
 
 class EquipmentPostApi {
+  static Future<EquipmentPostData?> getEquipmentPostById(String postId) async {
+    print('Fetching equipment post by ID: $postId');
+
+    final url = Uri.parse("$baseUrl/equipment-posts/$postId");
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      if (data['status'] == "success" && data['data'] != null) {
+        return EquipmentPostData.fromJson(data['data']);
+      } else {
+        print("No data found for ID: $postId");
+        return null;
+      }
+    } else {
+      throw Exception("Failed to load equipment post with ID $postId");
+    }
+  }
+
   static Future<bool> createEquipmentPost({
     required String title,
     required String contact,
@@ -59,7 +80,7 @@ class EquipmentPostApi {
         print("Adding ${photos.length} photos...");
         for (var photo in photos) {
           print("Photo path: ${photo.path}");
-          if (photo.path == null || photo.path.isEmpty) {
+          if (photo.path.isEmpty) {
             print("⚠️ Warning: photo.path is null or empty");
             continue;
           }
@@ -93,7 +114,7 @@ class EquipmentPostApi {
   }
 
   /// Get All Equipment Posts
-  static Future<List<EquipmentPostModel>> getAllEquipmentPosts() async {
+  static Future<List<EquipmentPostData>> getAllEquipmentPosts() async {
     final url = Uri.parse("$baseUrl/equipment-posts");
 
     final response = await http.get(url);
@@ -101,16 +122,14 @@ class EquipmentPostApi {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final List postsJson = data['data'] ?? data;
-      return postsJson
-          .map((json) => EquipmentPostModel.fromJson(json))
-          .toList();
+      return postsJson.map((json) => EquipmentPostData.fromJson(json)).toList();
     } else {
       throw Exception("Failed to load all equipment posts");
     }
   }
 
   /// Get Equipment Posts by Subcategory
-  static Future<List<EquipmentPostModel>> getEquipmentPostsBySubcategory(
+  static Future<List<EquipmentPostData>> getEquipmentPostsBySubcategory(
     int subcategoryId,
   ) async {
     print('subcategoryId : api layer');
@@ -124,9 +143,7 @@ class EquipmentPostApi {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final List postsJson = data['data'] ?? data;
-      return postsJson
-          .map((json) => EquipmentPostModel.fromJson(json))
-          .toList();
+      return postsJson.map((json) => EquipmentPostData.fromJson(json)).toList();
     } else {
       throw Exception(
         "Failed to load equipment posts for subcategory $subcategoryId",

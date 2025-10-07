@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/api/job_post_api.dart';
 import 'package:mobile_app/models/job_post_data.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../db/constants.dart';
 import '../../util/util.dart';
 
-class JobPostDetails extends StatelessWidget {
-  final JobPostData post;
+class JobPostDetails extends StatefulWidget {
+  final String postId;
 
-  const JobPostDetails({Key? key, required this.post}) : super(key: key);
+  JobPostDetails({Key? key, required this.postId}) : super(key: key);
+
+  @override
+  State<JobPostDetails> createState() => _JobPostDetailsState();
+}
+
+class _JobPostDetailsState extends State<JobPostDetails> {
+  late Future<JobPostData?> jobPost;
 
   void callEmployer(String phoneNumber) async {
     final Uri callUri = Uri(scheme: 'tel', path: phoneNumber);
@@ -29,151 +37,183 @@ class JobPostDetails extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    super.initState();
+    jobPost = JobPostApi.getJobPostById(widget.postId);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
-          children: [
-            // Top bar with back button
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              color: Colors.white,
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: const Icon(Icons.arrow_back, color: Colors.black),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Text(
-                      post.title,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+        child: FutureBuilder(
+          future: jobPost,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-            Expanded(
-              child: ListView(
-                children: [
-                  _buildImagesSection(post.logoUrl!),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Company Name
-                        Row(
-                          children: [
-                            Text(
-                              post.companyName,
-                              style: const TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const Spacer(), // pushes the icon to the end
-                            IconButton(
-                              onPressed: () {
-                                // handle wishlist toggle
-                              },
-                              icon: const Icon(
-                                Icons.bookmark_add_outlined,
-                                size: 26,
-                              ),
-                            ),
-                          ],
+            if (snapshot.hasError) {
+              print('Error: ${snapshot.error}');
+              return Center(child: Text("Error: ${snapshot.error}"));
+            }
+
+            if (!snapshot.hasData || snapshot.data == null) {
+              return const Center(child: Text("Job post not found"));
+            }
+
+            final post = snapshot.data!;
+
+            return Column(
+              children: [
+                // Top bar with back button
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  color: Colors.white,
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: const Icon(
+                          Icons.arrow_back,
+                          color: Colors.black,
                         ),
-                        const SizedBox(height: 5),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Text(
+                          post.title,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
-                        // Location and Type
-                        Row(
+                Expanded(
+                  child: ListView(
+                    children: [
+                      _buildImagesSection(post.logoUrl!),
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            // Company Name
                             Row(
                               children: [
-                                const Icon(
-                                  Icons.location_on,
-                                  size: 16,
-                                  color: Colors.grey,
-                                ),
-                                const SizedBox(width: 4),
                                 Text(
-                                  post.location!,
-                                  style: const TextStyle(fontSize: 14),
+                                  post.companyName,
+                                  style: const TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const Spacer(), // pushes the icon to the end
+                                IconButton(
+                                  onPressed: () {
+                                    // handle wishlist toggle
+                                  },
+                                  icon: const Icon(
+                                    Icons.bookmark_add_outlined,
+                                    size: 26,
+                                  ),
                                 ),
                               ],
                             ),
-                            const SizedBox(width: 16),
-                            Chip(
-                              label: Text(post.jobType),
-                              backgroundColor: Colors.grey.shade200,
+                            const SizedBox(height: 5),
+
+                            // Location and Type
+                            Row(
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.location_on,
+                                      size: 16,
+                                      color: Colors.grey,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      post.location!,
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(width: 16),
+                                Chip(
+                                  label: Text(post.jobType),
+                                  backgroundColor: Colors.grey.shade200,
+                                ),
+                              ],
                             ),
+                            const SizedBox(height: 16),
+
+                            // Salary
+                            Text(
+                              "Salary: ${post.price} ${post.salaryType}",
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+
+                            const SizedBox(height: 16),
+                            const Divider(),
+
+                            // Job Details Attributes
+                            _buildAttributes({
+                              "Industry": post.industry ?? "-",
+                              "Experience": post.experienceLevel ?? "-",
+                              "Remote": post.remote == true ? "Yes" : "No",
+                              "Posted": formatDate(post.createdDate),
+                              "Expires": formatDate(post.expiryDate),
+                            }),
+
+                            const SizedBox(height: 16),
+                            const Text(
+                              "Job Description",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              post.description ?? "-",
+                              style: const TextStyle(fontSize: 14),
+                            ),
+
+                            const SizedBox(height: 16),
+                            const Divider(),
+
+                            // Employer Info
+                            _buildEmployerInfo(
+                              post.companyName,
+                              post.logoUrl,
+                              post.email,
+                              post.phone,
+                            ),
+                            const SizedBox(height: 80),
                           ],
                         ),
-                        const SizedBox(height: 16),
-
-                        // Salary
-                        Text(
-                          "Salary: ${post.price} ${post.salaryType}",
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-
-                        const SizedBox(height: 16),
-                        const Divider(),
-
-                        // Job Details Attributes
-                        _buildAttributes({
-                          "Industry": post.industry ?? "-",
-                          "Experience": post.experienceLevel ?? "-",
-                          "Remote": post.remote == true ? "Yes" : "No",
-                          "Posted": formatDate(post.createdDate),
-                          "Expires": formatDate(post.expiryDate),
-                        }),
-
-                        const SizedBox(height: 16),
-                        const Text(
-                          "Job Description",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          post.description ?? "-",
-                          style: const TextStyle(fontSize: 14),
-                        ),
-
-                        const SizedBox(height: 16),
-                        const Divider(),
-
-                        // Employer Info
-                        _buildEmployerInfo(
-                          post.companyName,
-                          post.logoUrl,
-                          post.email,
-                          post.phone,
-                        ),
-                        const SizedBox(height: 80),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
+                ),
 
-            _buildBottomBar(context, post.phone, post.applicationUrl),
-          ],
+                _buildBottomBar(context, post.phone, post.applicationUrl),
+              ],
+            );
+          },
         ),
       ),
     );

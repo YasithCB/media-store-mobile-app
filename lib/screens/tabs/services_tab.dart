@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:mobile_app/api/post_api.dart';
 import 'package:mobile_app/db/constants.dart';
 
-import '../../models/post_model.dart';
+import '../../models/post_summary_data.dart';
 import '../../widgets/post.dart';
 
 class ServicesTab extends StatefulWidget {
@@ -17,12 +17,21 @@ class _ServicesTabState extends State<ServicesTab> {
   String selectedLocation = "Dubai";
   String selectedSort = "Popularity";
 
-  late Future<List<PostModel>> _posts;
+  late Future<List<PostSummaryData>> _posts;
 
   @override
   void initState() {
     super.initState();
-    _posts = PostApi.getAllPosts();
+    _posts = PostApi.fetchPostSummaries();
+    _posts
+        .then((posts) {
+          for (var post in posts) {
+            print("${post.type}: ${post.title} (${post.id})");
+          }
+        })
+        .catchError((e) {
+          print("Error fetching posts: $e");
+        });
   }
 
   @override
@@ -115,7 +124,7 @@ class _ServicesTabState extends State<ServicesTab> {
 
           // 🔹 Main content
           Expanded(
-            child: FutureBuilder<List<PostModel>>(
+            child: FutureBuilder<List<PostSummaryData>>(
               future: _posts,
               builder: (context, asyncSnapshot) {
                 if (asyncSnapshot.connectionState == ConnectionState.waiting) {
@@ -123,6 +132,7 @@ class _ServicesTabState extends State<ServicesTab> {
                 }
 
                 if (asyncSnapshot.hasError) {
+                  print("Error: ${asyncSnapshot.error}");
                   return Center(child: Text("Error: ${asyncSnapshot.error}"));
                 }
 
