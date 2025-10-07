@@ -18,6 +18,7 @@ class JobPostData {
   String description = '';
   List<String> tags = [];
   DateTime? expiryDate;
+  DateTime? createdDate;
   String email = '';
   String phone = '';
   String applicationUrl = '';
@@ -70,6 +71,17 @@ class JobPostData {
       }
     } else {
       expiryDate = null;
+    }
+
+    if (json['created_at'] != null &&
+        json['created_at'].toString().isNotEmpty) {
+      try {
+        createdDate = DateTime.parse(json['created_at']);
+      } catch (_) {
+        createdDate = null;
+      }
+    } else {
+      createdDate = null;
     }
 
     email = json['email'] ?? '';

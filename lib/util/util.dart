@@ -39,3 +39,24 @@ String formatJoinDate(String createdAt) {
   DateTime date = DateTime.parse(createdAt);
   return "Joined ${DateFormat.yMMM().format(date)}"; // e.g. "Joined Jan 2023"
 }
+
+String formatDate(dynamic date, {String format = 'MMM d yyyy'}) {
+  if (date == null) return "N/A";
+
+  try {
+    DateTime parsed;
+
+    if (date is String) {
+      if (date.isEmpty) return "N/A";
+      parsed = DateTime.parse(date);
+    } else if (date is DateTime) {
+      parsed = date;
+    } else {
+      return "N/A";
+    }
+
+    return DateFormat(format).format(parsed.toLocal());
+  } catch (_) {
+    return "N/A";
+  }
+}

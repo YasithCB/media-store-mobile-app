@@ -40,13 +40,6 @@ class _CategoryGridState extends State<CategoryGrid> {
 
   final List<Map<String, dynamic>> customSubCategories = [
     {
-      "title": "Companies Directory",
-      "icon": Icons.business,
-      "subcategoryId": 19, // match your DB subcategory_id
-      "categoryId": 3,
-    },
-
-    {
       "title": "Video & Camera Equipment",
       "icon": Icons.videocam,
       "subcategoryId": 5,
@@ -55,9 +48,9 @@ class _CategoryGridState extends State<CategoryGrid> {
     {"title": "Job Seeking", "icon": Icons.search, "subcategoryId": 10},
 
     {
-      "title": "Service Providers",
-      "icon": Icons.campaign,
-      "subcategoryId": 20,
+      "title": "Companies Directory",
+      "icon": Icons.business,
+      "subcategoryId": 19, // match your DB subcategory_id
       "categoryId": 3,
     },
     {
@@ -71,6 +64,12 @@ class _CategoryGridState extends State<CategoryGrid> {
       "icon": Icons.work,
       "subcategoryId": 11,
       "categoryId": 2,
+    },
+    {
+      "title": "Service Providers",
+      "icon": Icons.campaign,
+      "subcategoryId": 20,
+      "categoryId": 3,
     },
   ];
 

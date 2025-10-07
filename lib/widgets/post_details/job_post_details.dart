@@ -3,6 +3,7 @@ import 'package:mobile_app/models/job_post_data.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../db/constants.dart';
+import '../../util/util.dart';
 
 class JobPostDetails extends StatelessWidget {
   final JobPostData post;
@@ -95,40 +96,37 @@ class JobPostDetails extends StatelessWidget {
                         // Location and Type
                         Row(
                           children: [
-                            if (post.location != null)
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.location_on,
-                                    size: 16,
-                                    color: Colors.grey,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    post.location!,
-                                    style: const TextStyle(fontSize: 14),
-                                  ),
-                                ],
-                              ),
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.location_on,
+                                  size: 16,
+                                  color: Colors.grey,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  post.location!,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              ],
+                            ),
                             const SizedBox(width: 16),
-                            if (post.jobType != null)
-                              Chip(
-                                label: Text(post.jobType!),
-                                backgroundColor: Colors.grey.shade200,
-                              ),
+                            Chip(
+                              label: Text(post.jobType),
+                              backgroundColor: Colors.grey.shade200,
+                            ),
                           ],
                         ),
                         const SizedBox(height: 16),
 
                         // Salary
-                        if (post.salary != null)
-                          Text(
-                            "Salary: ${post.salary} ${post.salaryType ?? ''}",
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
+                        Text(
+                          "Salary: ${post.salary} ${post.salaryType}",
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
                           ),
+                        ),
 
                         const SizedBox(height: 16),
                         const Divider(),
@@ -138,14 +136,8 @@ class JobPostDetails extends StatelessWidget {
                           "Industry": post.industry ?? "-",
                           "Experience": post.experienceLevel ?? "-",
                           "Remote": post.remote == true ? "Yes" : "No",
-                          // "Posted": post.da.toLocal().toString().split(
-                          //   " ",
-                          // )[0],
-                          if (post.expiryDate != null)
-                            "Expiry": post.expiryDate!
-                                .toLocal()
-                                .toString()
-                                .split(" ")[0],
+                          "Posted": formatDate(post.createdDate),
+                          "Expires": formatDate(post.expiryDate),
                         }),
 
                         const SizedBox(height: 16),
@@ -201,7 +193,7 @@ class JobPostDetails extends StatelessWidget {
     return SizedBox(
       height: 250,
       child: Image.network(
-        '$baseUrl${image}',
+        image.startsWith("uploads") ? "$baseUrl/$image" : image,
         fit: BoxFit.cover,
         width: double.infinity,
       ),
@@ -256,7 +248,11 @@ class JobPostDetails extends StatelessWidget {
     return Row(
       children: [
         CircleAvatar(
-          backgroundImage: logo != null ? NetworkImage(logo) : null,
+          backgroundImage: logo != null
+              ? NetworkImage(
+                  logo.startsWith("uploads") ? "$baseUrl/$logo" : logo,
+                )
+              : null,
           backgroundColor: Colors.grey.shade200,
           child: logo == null ? const Icon(Icons.business) : null,
         ),
