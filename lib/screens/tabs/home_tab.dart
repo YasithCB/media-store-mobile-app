@@ -5,7 +5,7 @@ import 'package:mobile_app/api/job_post_api.dart';
 import 'package:mobile_app/db/constants.dart';
 import 'package:mobile_app/models/dealer_post_model.dart';
 import 'package:mobile_app/models/equipment_post_model.dart';
-import 'package:mobile_app/models/job_post_model.dart';
+import 'package:mobile_app/models/job_post_data.dart';
 import 'package:mobile_app/widgets/home/banner_swiper.dart';
 import 'package:mobile_app/widgets/home/categories_grid.dart';
 import 'package:mobile_app/widgets/home/horizontal_post_slider.dart';
@@ -170,7 +170,7 @@ class _HomeTabState extends State<HomeTab> {
                     results[1] as List<EquipmentPostModel>;
                 final audioAndSoundPosts =
                     results[2] as List<EquipmentPostModel>;
-                final popularJobs = results[3] as List<JobPostModel>;
+                final popularJobs = results[3] as List<JobPostData>;
                 final popularDealers = results[4] as List<DealerPostModel>;
 
                 return Expanded(

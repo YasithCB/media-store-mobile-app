@@ -1,15 +1,17 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:mobile_app/models/job_post_data.dart';
+import 'package:path/path.dart';
 
 import '../db/constants.dart';
-import '../models/job_post_model.dart';
 
 class JobPostApi {
   static const String endpoint = "$baseUrl/job-posts";
 
   /// GET: All job posts
-  static Future<List<JobPostModel>> getAllJobPosts() async {
+  static Future<List<JobPostData>> getAllJobPosts() async {
     final url = Uri.parse(endpoint);
 
     final response = await http.get(url);
@@ -20,14 +22,17 @@ class JobPostApi {
       // ✅ Ensure data is a list
       final data = decoded['data'] as List<dynamic>;
 
-      return data.map((x) => JobPostModel.fromJson(x)).toList();
+      print('getAllJobPosts');
+      print(data);
+
+      return data.map((x) => JobPostData.fromJson(x)).toList();
     } else {
       throw Exception("Failed to fetch job posts: ${response.body}");
     }
   }
 
   /// GET: Job posts by subcategory ID
-  static Future<List<JobPostModel>> getJobPostsBySubcategoryId(
+  static Future<List<JobPostData>> getJobPostsBySubcategoryId(
     int subcategoryId,
   ) async {
     final url = Uri.parse("$endpoint/subcategory/$subcategoryId");
@@ -40,7 +45,7 @@ class JobPostApi {
       // ✅ Ensure data is a list
       final data = decoded['data'] as List<dynamic>;
 
-      return data.map((x) => JobPostModel.fromJson(x)).toList();
+      return data.map((x) => JobPostData.fromJson(x)).toList();
     } else {
       throw Exception(
         "Failed to fetch job posts by subcategory: ${response.body}",
@@ -48,20 +53,80 @@ class JobPostApi {
     }
   }
 
-  /// POST: Create a job post
-  static Future<void> createJobPost(Map<String, dynamic> postData) async {
-    final url = Uri.parse(endpoint);
+  static Future<bool> createJobPost({
+    required String title,
+    required String companyName,
+    String? logo, // this will be a file path
+    String? location,
+    String? country,
+    String? jobType,
+    String? industry,
+    String? experienceLevel,
+    String? salary,
+    String? salaryType,
+    String? description,
+    DateTime? expiryDate,
+    String? email,
+    String? phone,
+    String? applicationUrl,
+    bool remote = false,
+    bool isHiring = true,
+    List<String>? tags,
+    required int categoryId,
+    required int subcategoryId,
+  }) async {
+    final uri = Uri.parse(endpoint);
 
-    final response = await http.post(
-      url,
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode(postData),
-    );
+    var request = http.MultipartRequest("POST", uri);
 
-    if (response.statusCode == 201) {
-      print("✅ Job post created successfully");
-    } else {
-      print("❌ Failed to create job post: ${response.body}");
+    // Add text fields
+    request.fields.addAll({
+      "title": title,
+      "company_name": companyName,
+      "location": location ?? "",
+      "country": country ?? "",
+      "job_type": jobType ?? "",
+      "industry": industry ?? "",
+      "experience_level": experienceLevel ?? "",
+      "salary": salary ?? "",
+      "salary_type": salaryType ?? "",
+      "description": description ?? "",
+      "expiry_date": expiryDate?.toIso8601String() ?? "",
+      "email": email ?? "",
+      "phone": phone ?? "",
+      "application_url": applicationUrl ?? "",
+      "remote": remote ? "1" : "0",
+      "is_hiring": isHiring ? "1" : "0",
+      "tags": tags != null ? tags.join(",") : "",
+      "category_id": categoryId.toString(),
+      "subcategory_id": subcategoryId.toString(),
+    });
+
+    // Add file
+    if (logo != null && logo.isNotEmpty && File(logo).existsSync()) {
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          "logo",
+          logo,
+          filename: basename(logo),
+        ),
+      );
+    }
+
+    try {
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      } else {
+        print("Error: ${response.statusCode}");
+        print(response.body);
+        return false;
+      }
+    } catch (e) {
+      print("Exception: $e");
+      return false;
     }
   }
 

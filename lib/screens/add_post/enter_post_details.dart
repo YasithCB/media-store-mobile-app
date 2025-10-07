@@ -266,7 +266,6 @@ class _EnterPostDetailsState extends State<EnterPostDetails> {
                 const SizedBox(height: 20),
 
                 // Submit Button
-                // Login Button
                 SizedBox(
                   width: double.infinity,
                   height: 50,

@@ -56,14 +56,27 @@ class EquipmentPostDetails extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          post.title,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        Row(
+                          children: [
+                            Text(
+                              post.title,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const Spacer(), // pushes the icon to the end
+                            IconButton(
+                              onPressed: () {
+                                // handle wishlist toggle
+                              },
+                              icon: const Icon(
+                                Icons.bookmark_add_outlined,
+                                size: 26,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 8),
                         Text(
                           "AED ${post.price.toStringAsFixed(2)}",
                           style: TextStyle(

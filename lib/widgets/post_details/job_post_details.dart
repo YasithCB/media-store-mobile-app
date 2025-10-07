@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/models/job_post_data.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../db/constants.dart';
-import '../../models/job_post_model.dart';
 
 class JobPostDetails extends StatelessWidget {
-  final JobPostModel post;
+  final JobPostData post;
 
   const JobPostDetails({Key? key, required this.post}) : super(key: key);
 
@@ -62,21 +62,35 @@ class JobPostDetails extends StatelessWidget {
             Expanded(
               child: ListView(
                 children: [
-                  _buildImagesSection(post.photos),
+                  _buildImagesSection(post.logoUrl!),
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Company Name
-                        Text(
-                          post.companyName,
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        Row(
+                          children: [
+                            Text(
+                              post.companyName,
+                              style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const Spacer(), // pushes the icon to the end
+                            IconButton(
+                              onPressed: () {
+                                // handle wishlist toggle
+                              },
+                              icon: const Icon(
+                                Icons.bookmark_add_outlined,
+                                size: 26,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 5),
 
                         // Location and Type
                         Row(
@@ -107,9 +121,9 @@ class JobPostDetails extends StatelessWidget {
                         const SizedBox(height: 16),
 
                         // Salary
-                        if (post.price != null)
+                        if (post.salary != null)
                           Text(
-                            "Salary: ${post.price} ${post.salaryType ?? ''}",
+                            "Salary: ${post.salary} ${post.salaryType ?? ''}",
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -124,9 +138,9 @@ class JobPostDetails extends StatelessWidget {
                           "Industry": post.industry ?? "-",
                           "Experience": post.experienceLevel ?? "-",
                           "Remote": post.remote == true ? "Yes" : "No",
-                          "Posted": post.postedDate.toLocal().toString().split(
-                            " ",
-                          )[0],
+                          // "Posted": post.da.toLocal().toString().split(
+                          //   " ",
+                          // )[0],
                           if (post.expiryDate != null)
                             "Expiry": post.expiryDate!
                                 .toLocal()
@@ -154,7 +168,7 @@ class JobPostDetails extends StatelessWidget {
                         // Employer Info
                         _buildEmployerInfo(
                           post.companyName,
-                          post.logo,
+                          post.logoUrl,
                           post.email,
                           post.phone,
                         ),
@@ -173,8 +187,8 @@ class JobPostDetails extends StatelessWidget {
     );
   }
 
-  Widget _buildImagesSection(List<String> images) {
-    if (images.isEmpty) {
+  Widget _buildImagesSection(String image) {
+    if (image.isEmpty) {
       return Container(
         height: 250,
         color: Colors.grey[200],
@@ -186,13 +200,10 @@ class JobPostDetails extends StatelessWidget {
 
     return SizedBox(
       height: 250,
-      child: PageView(
-        children: images
-            .map(
-              (url) =>
-                  Image.network(url, fit: BoxFit.cover, width: double.infinity),
-            )
-            .toList(),
+      child: Image.network(
+        '$baseUrl${image}',
+        fit: BoxFit.cover,
+        width: double.infinity,
       ),
     );
   }

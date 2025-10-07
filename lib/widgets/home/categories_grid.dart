@@ -28,7 +28,7 @@ class _CategoryGridState extends State<CategoryGrid> {
 
   IconData getIconFromName(String? name) {
     final Map<String, IconData> iconMapping = {
-      "equipment": Icons.category_outlined,
+      "equipment": Icons.storefront,
       "jobs": Icons.shopping_bag_outlined,
       "deal": Icons.handshake_outlined,
       // add more as needed
@@ -40,7 +40,7 @@ class _CategoryGridState extends State<CategoryGrid> {
 
   final List<Map<String, dynamic>> customSubCategories = [
     {
-      "title": "Media Companies",
+      "title": "Companies Directory",
       "icon": Icons.business,
       "subcategoryId": 19, // match your DB subcategory_id
       "categoryId": 3,
@@ -55,7 +55,7 @@ class _CategoryGridState extends State<CategoryGrid> {
     {"title": "Job Seeking", "icon": Icons.search, "subcategoryId": 10},
 
     {
-      "title": "Advertising Companies",
+      "title": "Service Providers",
       "icon": Icons.campaign,
       "subcategoryId": 20,
       "categoryId": 3,
@@ -224,6 +224,7 @@ class _CategoryGridState extends State<CategoryGrid> {
         );
       },
       child: Container(
+        padding: EdgeInsets.all(2),
         decoration: BoxDecoration(
           color: primaryColor,
           border: Border.all(color: Colors.black12),

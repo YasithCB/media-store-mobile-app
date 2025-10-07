@@ -76,13 +76,28 @@ class DealerPostDetails extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Dealer Name
-                        Text(
-                          dealer.title,
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        Row(
+                          children: [
+                            Text(
+                              dealer.title,
+                              style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const Spacer(), // pushes the icon to the end
+                            IconButton(
+                              onPressed: () {
+                                // handle wishlist toggle
+                              },
+                              icon: const Icon(
+                                Icons.bookmark_add_outlined,
+                                size: 26,
+                              ),
+                            ),
+                          ],
                         ),
+
                         const SizedBox(height: 8),
 
                         // Location & Rating
