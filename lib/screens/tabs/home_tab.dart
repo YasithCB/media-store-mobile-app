@@ -189,7 +189,7 @@ class _HomeTabState extends State<HomeTab> {
                         HorizontalPostSlider(
                           title: 'Popular Today',
                           postsList: popularPosts,
-                          categoryId: 0,
+                          categoryId: 1,
                         ),
 
                         const SizedBox(height: 8),

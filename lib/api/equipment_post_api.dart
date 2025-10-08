@@ -15,6 +15,9 @@ class EquipmentPostApi {
 
     final response = await http.get(url);
 
+    print('getEquipmentPostById Resp');
+    print(response.body);
+
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 

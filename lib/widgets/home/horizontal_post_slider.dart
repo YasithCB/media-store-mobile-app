@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/db/constants.dart';
+import 'package:mobile_app/widgets/post_details/equipment_post_details.dart';
 import 'package:mobile_app/widgets/post_details/job_post_details.dart';
 
 import '../../util/navigation_util.dart';
@@ -49,7 +50,12 @@ class _HorizontalPostSliderState extends State<HorizontalPostSlider> {
               final item = widget.postsList[index];
               return InkWell(
                 onTap: () {
-                  if (item.categoryId == 2) {
+                  if (item.categoryId == 1) {
+                    NavigationUtil.push(
+                      context,
+                      EquipmentPostDetails(postId: item.postId.toString()),
+                    );
+                  } else if (item.categoryId == 2) {
                     NavigationUtil.push(
                       context,
                       JobPostDetails(postId: item.postId.toString()),

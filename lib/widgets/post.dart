@@ -14,10 +14,7 @@ class Post extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        NavigationUtil.push(
-          context,
-          EquipmentPostDetails(post: null, postId: post.id),
-        );
+        NavigationUtil.push(context, EquipmentPostDetails(postId: post.id));
       },
       child: Container(
         width: double.infinity,
